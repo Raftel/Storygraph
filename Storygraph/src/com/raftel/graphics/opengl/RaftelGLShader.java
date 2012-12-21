@@ -1,8 +1,11 @@
 package com.raftel.graphics.opengl;
 
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import android.graphics.Color;
 import android.opengl.GLES20;
+import android.opengl.Matrix;
 
 public class RaftelGLShader {
 	private int mProgram;
@@ -67,5 +70,44 @@ public class RaftelGLShader {
 		GLES20.glDisableVertexAttribArray(mTextureHandle);		
 		
 		RaftelGLUtil.checkError("LplusShader", "unuseProgram", "");
+	}
+	
+	public void updateMesh(RaftelGLMesh mesh) {
+		FloatBuffer buffer = mesh.getVertexBuffer();
+
+		buffer.position(0);
+		GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, mesh.getVertexStride() * 4, buffer);
+
+		buffer.position(3);
+		GLES20.glVertexAttribPointer(mTextureHandle, 2, GLES20.GL_FLOAT, false, mesh.getVertexStride() * 4, buffer);
+		
+		RaftelGLUtil.checkError("LplusShader", "updateMesh", "");
+	}
+	
+	public void updateMaterial(RaftelGLMaterial material) {
+		GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, material.getTexture());
+		
+		// headnum : Handling color
+		float r = (float) Color.red(material.getColor()) / 255f;
+		float g = (float) Color.green(material.getColor()) / 255f;
+		float b = (float) Color.blue(material.getColor()) / 255f;
+		float a = (float) Color.alpha(material.getColor()) / 255f;
+
+		GLES20.glUniform4f(mColorHandle, r, g, b, a);
+		
+		RaftelGLUtil.checkError("LplusShader", "updateMaterial", "");
+	}
+	
+	public void updateMatrix(float[] mMatrix, float[] vMatrix, float[] pMatrix) {
+		float[] mvMatrix = new float[16];
+		float[] mvpMatrix = new float[16];
+		
+		Matrix.multiplyMM(mvMatrix, 0, vMatrix, 0, mMatrix, 0);
+		Matrix.multiplyMM(mvpMatrix, 0, pMatrix, 0, mvMatrix, 0);
+
+		GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
+		
+		RaftelGLUtil.checkError("LplusShader", "updateMatrix", "");
 	}
 }
