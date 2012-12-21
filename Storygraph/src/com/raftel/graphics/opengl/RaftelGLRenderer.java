@@ -1,19 +1,26 @@
 package com.raftel.graphics.opengl;
 
+import java.util.ArrayList;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
+import android.opengl.Matrix;
 
 public class RaftelGLRenderer implements Renderer {
 
 	private RaftelGLSurface mSurface;
 	private RaftelGLShader mShader;
-
 	private RaftelGLScene mScene;
+	private RaftelGLMesh mPrevMesh;
+	private RaftelGLMaterial mPrevMaterial;
 
 	private Callback mCallback;
+	
+	private final float[] mVPMatrix = new float[16];
+	private final float[] mIdentityMatrix = new float[16];
 
 	public interface Callback {
 		public void onSurfaceCreated();
@@ -46,13 +53,7 @@ public class RaftelGLRenderer implements Renderer {
 	}
 
 	public void onSurfaceChanged(GL10 arg0, int width, int height) {
-		GLES20.glViewport(0, 0, width, height);
-		
-		float ratio = (float) width / height;
-
-	    // this projection matrix is applied to object coordinates
-	    // in the onDrawFrame() method
-	    //Matrix.frustumM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
+		resize(width, height);
 	}
 
 	public void onDrawFrame(GL10 arg0) {
@@ -61,10 +62,126 @@ public class RaftelGLRenderer implements Renderer {
 
 		mShader.useProgram();
 
+		ArrayList<RaftelGLNode> renderNodeList = mScene.getRenderNodeList();
+		for (int i = 0; i < renderNodeList.size(); i++) {
+			renderModel(renderNodeList.get(i));
+		}
+		
 		mShader.unuseProgram();
 
 		if (mCallback != null)
 			mCallback.onDrawFrame();
+	}
+	
+	private void renderModel(RaftelGLNode node) {
+		if (node == null || node.isVisible() == false)
+			return;
+
+		synchronized (node) {
+
+			if (node instanceof RaftelGLModel) {
+				RaftelGLModel model = (RaftelGLModel) node;
+				RaftelGLMesh mesh = model.getMesh();
+				final RaftelGLMaterial material = model.getMaterial();
+
+				if (mesh != null) {
+
+					mShader.updateMatrix(model.getModelMatrix(), mVPMatrix);
+										
+					if (mPrevMesh != mesh) {
+						mShader.updateMesh(mesh);
+						mPrevMesh = mesh;
+					}
+
+
+					if (material != null) {
+						if (mPrevMaterial != material) {
+							mShader.updateMaterial(material);
+							mPrevMaterial = material;
+						}
+						
+						GLES20.glDrawElements(GLES20.GL_TRIANGLES,
+								mesh.getIndexCount(), GLES20.GL_UNSIGNED_SHORT,
+								mesh.getIndexBuffer());
+					}
+				}
+			}
+
+			// render child
+			ArrayList<RaftelGLNode> childList = node.getChildList();
+			for (int i = 0; i < childList.size(); i++) {
+				renderModel(childList.get(i));
+			}
+		}
+	}
+	
+	private void resize(int width, int height) {
+		// Adjust the viewport based on geometry changes,
+		// such as screen rotation
+		GLES20.glViewport(0, 0, width, height);
+
+		Matrix.setIdentityM(mVPMatrix, 0);
+		// Matrix.orthoM(mProjMatrix, 0, -width*0.5f, width*0.5f, -height*0.5f,
+		// height*0.5f, height*0.5f, height*10.0f);
+
+		Matrix.frustumM(mVPMatrix, 0, -width * 0.25f, width * 0.25f, -height * 0.25f, height * 0.25f, height * 0.5f, height * 10.0f);
+
+		// mirror
+		mVPMatrix[5] = -mVPMatrix[5];
+
+		Matrix.translateM(mVPMatrix, 0, mVPMatrix, 0, -width * 0.5f, -height * 0.5f, -height);
+	}
+	
+	public RaftelGLNode pick(float x, float y) {
+
+		float[] inNear = new float[4];
+		float[] inFar = new float[4];
+
+		inNear[0] = (x / (float) mSurface.getWidth()) * 2 - 1;
+		inNear[1] = 1 - (y / (float) mSurface.getHeight()) * 2;
+		inNear[2] = -1;
+		inNear[3] = 1;
+
+		inFar[0] = (x / (float) mSurface.getWidth()) * 2 - 1;
+		inFar[1] = 1 - (y / (float) mSurface.getHeight()) * 2;
+		inFar[2] = 1;
+		inFar[3] = 1;
+
+		RaftelGLNode.PickedNode pickedNode = new RaftelGLNode.PickedNode();
+
+		ArrayList<RaftelGLNode> renderNodeList = mScene.getRenderNodeList();
+		for (int i = 0; i < renderNodeList.size(); i++) {
+			renderNodeList.get(i).findPickedNode(pickedNode, mVPMatrix, inNear, inFar);
+		}
+
+		return pickedNode.mNode;
+	}
+
+	public RaftelGLNode pick(RaftelGLNode renderNode, float x, float y) {
+
+		float[] inNear = new float[4];
+		float[] inFar = new float[4];
+
+		inNear[0] = (x / (float) mSurface.getWidth()) * 2 - 1;
+		inNear[1] = 1 - (y / (float) mSurface.getHeight()) * 2;
+		inNear[2] = -1;
+		inNear[3] = 1;
+
+		inFar[0] = (x / (float) mSurface.getWidth()) * 2 - 1;
+		inFar[1] = 1 - (y / (float) mSurface.getHeight()) * 2;
+		inFar[2] = 1;
+		inFar[3] = 1;
+
+		RaftelGLNode.PickedNode pickedNode = new RaftelGLNode.PickedNode();
+
+		ArrayList<RaftelGLNode> renderNodeList = mScene.getRenderNodeList();
+		for (int i = 0; i < renderNodeList.size(); i++) {
+			if (renderNodeList.get(i) == renderNode) {
+				renderNodeList.get(i).findPickedNode(pickedNode, mVPMatrix, inNear, inFar);
+			}
+		}
+
+		return pickedNode.mNode;
 	}
 
 	public void setScene(RaftelGLScene scene) {

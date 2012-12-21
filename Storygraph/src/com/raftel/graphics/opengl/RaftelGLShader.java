@@ -110,4 +110,13 @@ public class RaftelGLShader {
 		
 		RaftelGLUtil.checkError("LplusShader", "updateMatrix", "");
 	}
+	
+	public void updateMatrix(float[] mMatrix, float[] vpMatrix) {
+		float[] mvpMatrix = new float[16];
+		Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, mMatrix, 0);
+
+		GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
+		
+		RaftelGLUtil.checkError("LplusShader", "updateMatrix", "");
+	}
 }
