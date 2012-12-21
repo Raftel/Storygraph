@@ -9,7 +9,7 @@ public class RaftelGLSurface extends GLSurfaceView {
 		super(context);
 		
 		// Set the Renderer for drawing on the GLSurfaceView
-        setRenderer(new RaftelGLRenderer());
+        setRenderer(new RaftelGLRenderer(this));
         
 		setEGLContextClientVersion(2);
 	}
