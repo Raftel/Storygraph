@@ -1,17 +1,27 @@
 package com.raftel.storygraph;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.support.v4.app.NavUtils;
 
-public class SGActivity extends Activity {
+import com.raftel.appear.AppearRenderer;
+import com.raftel.appear.AppearSurface;
+import com.raftel.storygraph.scenebrowser.SGSceneBrowser;
 
+public class SGActivity extends Activity implements AppearRenderer.Callback {
+
+	AppearSurface mGlSurface; 
+	AppearRenderer mGlRenderer;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sg);
+        
+        mGlSurface = new AppearSurface(this); 
+        mGlRenderer = mGlSurface.getRenderer();
+        mGlRenderer.setCallback(this);
+        
+        setContentView(mGlSurface);
     }
 
     @Override
@@ -20,5 +30,11 @@ public class SGActivity extends Activity {
         return true;
     }
 
-    
+	public void onSurfaceCreated() {
+		SGSceneBrowser sceneBrowser = new SGSceneBrowser(this);
+		mGlRenderer.setScene(sceneBrowser);
+	}
+
+	public void onDrawFrame() {
+	}
 }
