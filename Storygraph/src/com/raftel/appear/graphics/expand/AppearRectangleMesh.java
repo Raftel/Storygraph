@@ -59,4 +59,26 @@ public class AppearRectangleMesh extends AppearMesh {
 		
 		setIndexArray(indexArray, 6  * mSplit * mSplit);
 	}
+	
+	@Override
+	public float[] getIntersectionPoint(float[] origin, float[] ray) {
+
+		if (ray[2] == 0.0f)
+			return null;
+
+		float point[] = new float[4];
+		float t = -origin[2] / ray[2];
+
+		point[0] = origin[0] + ray[0] * t;
+		point[1] = origin[1] + ray[1] * t;
+		point[2] = 0.0f;
+		point[3] = 1.0f;
+
+		if (point[0] < 0.0f || point[0] > mWidth)
+			return null;
+		if (point[1] < 0.0f || point[1] > mHeight)
+			return null;
+
+		return point;
+	}
 }

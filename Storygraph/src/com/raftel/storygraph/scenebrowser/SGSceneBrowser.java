@@ -11,16 +11,19 @@ import com.raftel.appear.animation.AppearAnimationProp;
 import com.raftel.appear.graphics.AppearMaterial;
 import com.raftel.appear.graphics.AppearModel;
 import com.raftel.appear.graphics.AppearNode;
-import com.raftel.appear.graphics.AppearScene;
+import com.raftel.appear.graphics.AppearSurface;
 import com.raftel.appear.graphics.expand.AppearRectangleMesh;
 import com.raftel.appear.graphics.expand.AppearSphereMesh;
+import com.raftel.appear.graphics.expand.AppearTouchableScene;
 import com.raftel.storygraph.R;
 
-public class SGSceneBrowser extends AppearScene {
+public class SGSceneBrowser extends AppearTouchableScene {
 
 	Context mContext;
 	
-	public SGSceneBrowser(Context context) {
+	public SGSceneBrowser(Context context, AppearSurface surface) {
+		super(surface);
+		
 		mContext = context;
 		Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.test_earth);
 		
@@ -32,11 +35,11 @@ public class SGSceneBrowser extends AppearScene {
 		material.setTexture(bitmap, false);
 		
 		AppearModel model = new AppearModel();
-		//model.setMesh(rectMesh);
 		//model.setMesh(sphereMesh);
 		model.setMesh(rectangleMesh);
 		model.setMaterial(material);
 		model.setTranslation(200, 200, 0);
+		model.setPickable(true);
 				
 		AppearNode node = new AppearNode();
 		node.addChild(model);
@@ -44,6 +47,6 @@ public class SGSceneBrowser extends AppearScene {
 		
 		AppearAnimation anim = AppearAnimationManager.getInstance().createAnimation(1000, 10000, AppearAnimation.FUNC_EASE_OUT);
 		anim.addProperty(new AppearAnimationProp(AppearAnimationProp.PROP_ROTATE_X, model, 0, 360));
-		anim.start();
+		//anim.start();
 	}
 }

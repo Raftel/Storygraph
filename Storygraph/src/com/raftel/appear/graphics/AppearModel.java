@@ -102,8 +102,7 @@ public class AppearModel extends AppearNode {
 		Matrix.multiplyMV(vpVector, 0, matModel, 0, vpVector, 0);
 
 		// distance^2
-		distSq = vpVector[0] * vpVector[0] + vpVector[1] * vpVector[1]
-				+ vpVector[2] * vpVector[2];
+		distSq = vpVector[0] * vpVector[0] + vpVector[1] * vpVector[1] + vpVector[2] * vpVector[2];
 
 		return distSq;
 	}

@@ -195,6 +195,10 @@ public class AppearRenderer implements Renderer {
 
 		return pickedNode.mNode;
 	}
+	
+	public float[] getVPMatrix() {
+		return mVPMatrix;
+	}
 
 	public void setScene(AppearScene scene) {
 		mScene = scene;
