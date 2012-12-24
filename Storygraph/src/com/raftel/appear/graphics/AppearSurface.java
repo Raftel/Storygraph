@@ -1,4 +1,4 @@
-package com.raftel.appear;
+package com.raftel.appear.graphics;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;

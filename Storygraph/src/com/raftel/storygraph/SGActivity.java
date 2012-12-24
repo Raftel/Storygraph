@@ -4,8 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 
-import com.raftel.appear.AppearRenderer;
-import com.raftel.appear.AppearSurface;
+import com.raftel.appear.animation.AppearAnimationManager;
+import com.raftel.appear.graphics.AppearRenderer;
+import com.raftel.appear.graphics.AppearSurface;
 import com.raftel.storygraph.scenebrowser.SGSceneBrowser;
 
 public class SGActivity extends Activity implements AppearRenderer.Callback {
@@ -20,6 +21,7 @@ public class SGActivity extends Activity implements AppearRenderer.Callback {
         mGlSurface = new AppearSurface(this); 
         mGlRenderer = mGlSurface.getRenderer();
         mGlRenderer.setCallback(this);
+        mGlRenderer.setAnimManager(AppearAnimationManager.getInstance());
         
         setContentView(mGlSurface);
     }

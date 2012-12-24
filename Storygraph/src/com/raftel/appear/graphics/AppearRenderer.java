@@ -1,4 +1,4 @@
-package com.raftel.appear;
+package com.raftel.appear.graphics;
 
 import java.util.ArrayList;
 
@@ -10,9 +10,13 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
 
+import com.raftel.appear.animation.AppearAnimationManager;
+
 public class AppearRenderer implements Renderer {
 
 	private AppearSurface mSurface;
+	private AppearAnimationManager mAnimManager;
+	
 	private AppearShader mShader;
 	private AppearScene mScene;
 	private AppearMesh mPrevMesh;
@@ -38,7 +42,7 @@ public class AppearRenderer implements Renderer {
 		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 		GLES20.glDepthFunc(GLES20.GL_LEQUAL);
 		
-		AppearUtil.checkError("AppearRenderer", "initialize", "");
+		AppearGraphicsUtil.checkError("AppearRenderer", "initialize", "");
 	}
 
 	public void onSurfaceCreated(GL10 arg0, EGLConfig arg1) {
@@ -49,16 +53,20 @@ public class AppearRenderer implements Renderer {
 		if (mCallback != null)
 			mCallback.onSurfaceCreated();
 		
-		AppearUtil.checkError("AppearRenderer", "onSurfaceCreated", "");
+		AppearGraphicsUtil.checkError("AppearRenderer", "onSurfaceCreated", "");
 	}
 
 	public void onSurfaceChanged(GL10 arg0, int width, int height) {
 		resize(width, height);
 
-		AppearUtil.checkError("AppearRenderer", "onSurfaceChanged", "");
+		AppearGraphicsUtil.checkError("AppearRenderer", "onSurfaceChanged", "");
 	}
 
 	public void onDrawFrame(GL10 arg0) {
+		
+		if (mAnimManager != null) {
+			mAnimManager.doAnimations();
+		}
 		
 		AppearMaterial.doReservedTexLoading();
 		
@@ -79,7 +87,7 @@ public class AppearRenderer implements Renderer {
 		if (mCallback != null)
 			mCallback.onDrawFrame();
 		
-		AppearUtil.checkError("AppearRenderer", "onDrawFrame", "");
+		AppearGraphicsUtil.checkError("AppearRenderer", "onDrawFrame", "");
 	}
 	
 	private void renderModel(AppearNode node) {
@@ -202,5 +210,13 @@ public class AppearRenderer implements Renderer {
 
 	public Callback getCallback() {
 		return mCallback;
+	}
+	
+	public void setAnimManager(AppearAnimationManager animManager) {
+		mAnimManager = animManager;
+	}
+	
+	public AppearAnimationManager getAnimManager() {
+		return mAnimManager;
 	}
 }

@@ -1,6 +1,6 @@
-package com.raftel.appear.expand;
+package com.raftel.appear.graphics.expand;
 
-import com.raftel.appear.AppearMesh;
+import com.raftel.appear.graphics.AppearMesh;
 
 public class AppearSphereMesh extends AppearMesh {
 

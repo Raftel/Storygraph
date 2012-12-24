@@ -1,4 +1,4 @@
-package com.raftel.appear;
+package com.raftel.appear.graphics;
 
 import java.util.ArrayList;
 
@@ -87,7 +87,7 @@ public class AppearMaterial {
 			if (mTexture != INVALID_TEXTURE_ID) {
 				if (mBitmap != null) {
 					if (mBitmap.isRecycled() == false)
-						AppearUtil.loadTexture(mTexture, mBitmap);
+						AppearGraphicsUtil.loadTexture(mTexture, mBitmap);
 					else
 						Log.w("RaftelGLMaterial", "loadTexture - bitmap is recylcled");
 
@@ -96,14 +96,14 @@ public class AppearMaterial {
 					mBitmap = null;
 					mDoRecycle = false;
 				} else {
-					AppearUtil.unloadTexture(mTexture);
+					AppearGraphicsUtil.unloadTexture(mTexture);
 					mTexture = INVALID_TEXTURE_ID;
 					mDoRecycle = false;
 				}
 			} else {
 				if (mBitmap != null) {
 					if (mBitmap.isRecycled() == false)
-						mTexture = AppearUtil.loadTexture(mBitmap);
+						mTexture = AppearGraphicsUtil.loadTexture(mBitmap);
 					else
 						Log.w("RaftelGLMaterial", "loadTexture - bitmap is recylcled");
 

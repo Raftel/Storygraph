@@ -1,4 +1,4 @@
-package com.raftel.appear;
+package com.raftel.appear.graphics;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

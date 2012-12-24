@@ -1,4 +1,4 @@
-package com.raftel.appear;
+package com.raftel.appear.graphics;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -26,8 +26,8 @@ public class AppearShader {
 
 	public void loadShader(String vShaderCode, String fShaderCode) {
 		mProgram = GLES20.glCreateProgram();
-		mVertexShader = AppearUtil.loadShader(GLES20.GL_VERTEX_SHADER, vShaderCode);
-		mFragemenShader = AppearUtil.loadShader(GLES20.GL_FRAGMENT_SHADER, fShaderCode);
+		mVertexShader = AppearGraphicsUtil.loadShader(GLES20.GL_VERTEX_SHADER, vShaderCode);
+		mFragemenShader = AppearGraphicsUtil.loadShader(GLES20.GL_FRAGMENT_SHADER, fShaderCode);
 
 		GLES20.glAttachShader(mProgram, mVertexShader);
 		GLES20.glAttachShader(mProgram, mFragemenShader);
@@ -38,7 +38,7 @@ public class AppearShader {
 
 		if (linkStatus.get() == GLES20.GL_FALSE) {
 			GLES20.glDeleteProgram(mProgram);
-			AppearUtil.checkError("AppearShader", "loadShader", "linkStatus is not true");
+			AppearGraphicsUtil.checkError("AppearShader", "loadShader", "linkStatus is not true");
 			return;
 		}
 
@@ -50,7 +50,7 @@ public class AppearShader {
 		mColorHandle = GLES20.glGetUniformLocation(mProgram, "uColor");
 		mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
 
-		AppearUtil.checkError("AppearShader", "loadShader", "");
+		AppearGraphicsUtil.checkError("AppearShader", "loadShader", "");
 	}
 
 	public void useProgram() {
@@ -59,14 +59,14 @@ public class AppearShader {
 		GLES20.glEnableVertexAttribArray(mPositionHandle);
 		GLES20.glEnableVertexAttribArray(mTextureHandle);
 
-		AppearUtil.checkError("AppearShader", "useProgram", "");
+		AppearGraphicsUtil.checkError("AppearShader", "useProgram", "");
 	}
 	
 	public void unuseProgram() {
 		GLES20.glDisableVertexAttribArray(mPositionHandle);
 		GLES20.glDisableVertexAttribArray(mTextureHandle);		
 		
-		AppearUtil.checkError("AppearShader", "unuseProgram", "");
+		AppearGraphicsUtil.checkError("AppearShader", "unuseProgram", "");
 	}
 	
 	public void updateMesh(AppearMesh mesh) {
@@ -78,7 +78,7 @@ public class AppearShader {
 		buffer.position(3);
 		GLES20.glVertexAttribPointer(mTextureHandle, 2, GLES20.GL_FLOAT, false, mesh.getVertexStride() * 4, buffer);
 		
-		AppearUtil.checkError("AppearShader", "updateMesh", "");
+		AppearGraphicsUtil.checkError("AppearShader", "updateMesh", "");
 	}
 	
 	public void updateMaterial(AppearMaterial material) {
@@ -93,7 +93,7 @@ public class AppearShader {
 
 		GLES20.glUniform4f(mColorHandle, r, g, b, a);
 		
-		AppearUtil.checkError("AppearShader", "updateMaterial", "");
+		AppearGraphicsUtil.checkError("AppearShader", "updateMaterial", "");
 	}
 	
 	public void updateMatrix(float[] mMatrix, float[] vMatrix, float[] pMatrix) {
@@ -105,7 +105,7 @@ public class AppearShader {
 
 		GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
 		
-		AppearUtil.checkError("AppearShader", "updateMatrix", "");
+		AppearGraphicsUtil.checkError("AppearShader", "updateMatrix", "");
 	}
 	
 	public void updateMatrix(float[] mMatrix, float[] vpMatrix) {
@@ -114,6 +114,6 @@ public class AppearShader {
 
 		GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
 		
-		AppearUtil.checkError("AppearShader", "updateMatrix", "");
+		AppearGraphicsUtil.checkError("AppearShader", "updateMatrix", "");
 	}
 }

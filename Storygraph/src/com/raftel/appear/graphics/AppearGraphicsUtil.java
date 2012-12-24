@@ -1,11 +1,11 @@
-package com.raftel.appear;
+package com.raftel.appear.graphics;
 
 import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.util.Log;
 
-public class AppearUtil {
+public class AppearGraphicsUtil {
 
 	public static int loadShader(int type, String shaderCode) {
 
