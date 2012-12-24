@@ -66,6 +66,6 @@ public class AppearUtil {
 	public static void checkError(String className, String funcName, String msg) {
 		int error = GLES20.glGetError();
 		if (error != GLES20.GL_NO_ERROR)
-			Log.e("RaftelGLU", className + ":" + funcName + "(" + msg + ")" + "gl error - " + GLUtils.getEGLErrorString(error));
+			Log.e("Appear", className + ":" + funcName + "(" + msg + ")" + "gl error - " + GLUtils.getEGLErrorString(error));
 	}
 }

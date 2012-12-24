@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import android.graphics.Color;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
@@ -20,11 +21,9 @@ public class AppearRenderer implements Renderer {
 	private Callback mCallback;
 	
 	private final float[] mVPMatrix = new float[16];
-	//private final float[] mIdentityMatrix = new float[16];
 
 	public interface Callback {
 		public void onSurfaceCreated();
-
 		public void onDrawFrame();
 	}
 
@@ -32,32 +31,40 @@ public class AppearRenderer implements Renderer {
 		mSurface = surface;
 	}
 
-	private void initialize() {
-		GLES20.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
-		
+	private void initialize() {						
 		GLES20.glEnable(GLES20.GL_BLEND);
 		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
 		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 		GLES20.glDepthFunc(GLES20.GL_LEQUAL);
+		
+		AppearUtil.checkError("AppearRenderer", "initialize", "");
 	}
 
 	public void onSurfaceCreated(GL10 arg0, EGLConfig arg1) {
-		// Set the background frame color
 		initialize();
 		
 		mShader = new AppearShader(AppearShaderStr.strVertexShaderDefault, AppearShaderStr.strFragmentShaderDefault);
 		
 		if (mCallback != null)
 			mCallback.onSurfaceCreated();
+		
+		AppearUtil.checkError("AppearRenderer", "onSurfaceCreated", "");
 	}
 
 	public void onSurfaceChanged(GL10 arg0, int width, int height) {
 		resize(width, height);
+
+		AppearUtil.checkError("AppearRenderer", "onSurfaceChanged", "");
 	}
 
 	public void onDrawFrame(GL10 arg0) {
+		
+		AppearMaterial.doReservedTexLoading();
+		
 		// Redraw background color
+		int bgColor = mScene.getBackgroundColor();
+		GLES20.glClearColor(Color.red(bgColor), Color.green(bgColor), Color.blue(bgColor), Color.alpha(bgColor));
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
 		mShader.useProgram();
@@ -71,6 +78,8 @@ public class AppearRenderer implements Renderer {
 
 		if (mCallback != null)
 			mCallback.onDrawFrame();
+		
+		AppearUtil.checkError("AppearRenderer", "onDrawFrame", "");
 	}
 	
 	private void renderModel(AppearNode node) {
@@ -78,14 +87,12 @@ public class AppearRenderer implements Renderer {
 			return;
 
 		synchronized (node) {
-
 			if (node instanceof AppearModel) {
 				AppearModel model = (AppearModel) node;
 				AppearMesh mesh = model.getMesh();
-				final AppearMaterial material = model.getMaterial();
+				AppearMaterial material = model.getMaterial();
 
 				if (mesh != null) {
-
 					mShader.updateMatrix(model.getModelMatrix(), mVPMatrix);
 										
 					if (mPrevMesh != mesh) {
@@ -93,17 +100,14 @@ public class AppearRenderer implements Renderer {
 						mPrevMesh = mesh;
 					}
 
-
 					if (material != null) {
 						if (mPrevMaterial != material) {
 							mShader.updateMaterial(material);
 							mPrevMaterial = material;
 						}
-						
-						GLES20.glDrawElements(GLES20.GL_TRIANGLES,
-								mesh.getIndexCount(), GLES20.GL_UNSIGNED_SHORT,
-								mesh.getIndexBuffer());
 					}
+					
+					GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.getIndexCount(), GLES20.GL_UNSIGNED_SHORT, mesh.getIndexBuffer());
 				}
 			}
 
