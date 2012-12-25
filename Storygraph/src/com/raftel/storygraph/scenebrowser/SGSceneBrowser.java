@@ -25,28 +25,40 @@ public class SGSceneBrowser extends AppearTouchableScene {
 		super(surface);
 		
 		mContext = context;
-		Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.test_earth);
 		
-		AppearSphereMesh sphereMesh = new AppearSphereMesh(50, 20);
-		AppearRectangleMesh rectangleMesh = new AppearRectangleMesh(400, 200, 50);
+		Bitmap bitmap1 = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.test_earth);
+		Bitmap bitmap2 = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.test_book);
 		
-		AppearMaterial material = new AppearMaterial();
-		material.setColor(0xff00ffff);
-		material.setTexture(bitmap, false);
+		AppearRectangleMesh rectangleMesh = new AppearRectangleMesh(300, 200, 50);
 		
-		AppearModel model = new AppearModel();
-		//model.setMesh(sphereMesh);
-		model.setMesh(rectangleMesh);
-		model.setMaterial(material);
-		model.setTranslation(200, 200, 0);
-		model.setPickable(true);
+		AppearMaterial material1 = new AppearMaterial();
+		material1.setColor(0xff00ffff);
+		material1.setTexture(bitmap1, false);
+		
+		AppearMaterial material2 = new AppearMaterial();
+		material2.setColor(0xff00ffff);
+		material2.setTexture(bitmap2, false);
+		
+		AppearModel model1 = new AppearModel();
+		model1.setMesh(rectangleMesh);
+		model1.setMaterial(material1);
+		model1.setTranslation(200, 200, 0);
+		model1.setPickable(true);
+		
+		AppearModel model2 = new AppearModel();
+		model2.setMesh(rectangleMesh);
+		model2.setMaterial(material2);
+		model2.setTranslation(20, 600, 0);
+		//model2.setScale(1.5f, 1.5f, 0);
+		model2.setPickable(true);
 				
 		AppearNode node = new AppearNode();
-		node.addChild(model);
+		node.addChild(model1);
+		node.addChild(model2);
 		addRenderNode(node);
 		
-		AppearAnimation anim = AppearAnimationManager.getInstance().createAnimation(1000, 10000, AppearAnimation.FUNC_EASE_OUT);
-		anim.addProperty(new AppearAnimationProp(AppearAnimationProp.PROP_ROTATE_X, model, 0, 360));
+		//AppearAnimation anim = AppearAnimationManager.getInstance().createAnimation(1000, 10000, AppearAnimation.FUNC_EASE_OUT);
+		//anim.addProperty(new AppearAnimationProp(AppearAnimationProp.PROP_ROTATE_X, model, 0, 360));
 		//anim.start();
 	}
 }
