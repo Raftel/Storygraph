@@ -36,6 +36,7 @@ public class AppearTouchableScene extends AppearScene {
 		
 		mTouchInfo = new TouchInfo();
 		mDragDropNode = new AppearNode();
+		addRenderNode(mDragDropNode);
 	}
 	
 	public AppearNode pick(float x, float y) {
