@@ -6,20 +6,11 @@ import com.raftel.appear.graphics.expand.AppearRenderTarget;
 import com.raftel.appear.graphics.expand.AppearRenderGraph;
 import com.raftel.appear.graphics.AppearModel;
 
-public class AppearRenderModel {
+public class AppearRenderModel extends AppearModel {
 	private ArrayList<AppearRenderTarget> mTargetList = null;
-	private AppearModel mModel = null;
 
 	public AppearRenderModel() {
 		mTargetList = new ArrayList<AppearRenderTarget>();
-	}
-
-	public AppearModel getModel() {
-		return mModel;
-	}
-
-	public void setModel(AppearModel model) {
-		mModel = model;
 	}
 
 	public boolean addTarget(AppearRenderTarget target) {

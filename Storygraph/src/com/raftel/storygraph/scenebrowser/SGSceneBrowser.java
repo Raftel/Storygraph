@@ -54,18 +54,15 @@ public class SGSceneBrowser extends AppearControl {
 		Bitmap mBGBitmap = null;
 		AppearMaterial mMaterial = null;
 		AppearBounds mBounds = null;
-		AppearModel mModel = null;
 		private static final int SG_SCENE_SPLIT = 50;
 
 		public __SceneContainer() {
 			mMaterial = new AppearMaterial();
 			mBounds = new AppearBounds(0, 0, 0, 0);
-			mModel = new AppearModel();
 
 			mMaterial.setColor(0xff00ffff);
-			mModel.setMaterial(mMaterial);
-			mModel.setPickable(true);
-			setModel(mModel);
+			setMaterial(mMaterial);
+			setPickable(true);
 		}
 
 		public void setBGBitmap(Bitmap bitmap) {
@@ -80,8 +77,8 @@ public class SGSceneBrowser extends AppearControl {
 		public void setBounds(AppearBounds bounds) {
 			mBounds = bounds;
 			AppearRectangleMesh mesh = new AppearRectangleMesh(mBounds.getWidth(), mBounds.getHeight(), SG_SCENE_SPLIT);
-			mModel.setMesh(mesh);
-			mModel.setTranslation(mBounds.getX(), mBounds.getY(), 0);
+			setMesh(mesh);
+			setTranslation(mBounds.getX(), mBounds.getY(), 0);
 		}
 
 		public AppearBounds getBounds() {
@@ -94,18 +91,15 @@ public class SGSceneBrowser extends AppearControl {
 		Bitmap mBitmap = null;
 		AppearMaterial mMaterial = null;
 		AppearBounds mBounds = null;
-		AppearModel mModel = null;
 		private static final int SG_SCENE_SPLIT = 50;
 
 		public __Scene() {
 			mMaterial = new AppearMaterial();
 			mBounds = new AppearBounds(0, 0, 0, 0);
-			mModel = new AppearModel();
 
 			mMaterial.setColor(0xff00ffff);
-			mModel.setMaterial(mMaterial);
-			mModel.setPickable(true);
-			setModel(mModel);
+			setMaterial(mMaterial);
+			setPickable(true);
 		}
 
 		public void setBitmap(Bitmap bitmap) {
@@ -120,8 +114,8 @@ public class SGSceneBrowser extends AppearControl {
 		public void setBounds(AppearBounds bounds) {
 			mBounds = bounds;
 			AppearRectangleMesh mesh = new AppearRectangleMesh(mBounds.getWidth(), mBounds.getHeight(), SG_SCENE_SPLIT);
-			mModel.setMesh(mesh);
-			mModel.setTranslation(mBounds.getX(), mBounds.getY(), 0);
+			setMesh(mesh);
+			setTranslation(mBounds.getX(), mBounds.getY(), 0);
 		}
 
 		public AppearBounds getBounds() {
@@ -163,7 +157,7 @@ public class SGSceneBrowser extends AppearControl {
 		scene.setBitmap(bitmap);
 		scene.setBounds(sceneBounds);
 
-		mSceneContainer.getModel().addChild(scene.getModel());
+		mSceneContainer.addChild(scene);
 		mSceneList.add(sceneNum, scene);
 		return mSceneList.size() - 1;
 	}
@@ -178,13 +172,13 @@ public class SGSceneBrowser extends AppearControl {
 		scene.setBitmap(bitmap);
 		scene.setBounds(sceneBounds);
 
-		mSceneContainer.getModel().addChild(scene.getModel());
+		mSceneContainer.addChild(scene);
 		mSceneList.add(scene);
 		return mSceneList.size() - 1;
 	}
 
 	public void removeScene(int sceneNum) {
-		mSceneContainer.getModel().removeChild(mSceneList.get(sceneNum).getModel());
+		mSceneContainer.removeChild(mSceneList.get(sceneNum));
 
 		mSceneList.remove(sceneNum);
 	}

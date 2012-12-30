@@ -104,8 +104,8 @@ public class AppearRenderTarget {
 		mRenderModel = renderModel;
 
 		// For Graphics
-		mAppearModel_ForGraphics.setMaterial(renderModel.getModel().getMaterial());
-		mAppearModel_ForGraphics.setMesh(renderModel.getModel().getMesh());
+		mAppearModel_ForGraphics.setMaterial(renderModel.getMaterial());
+		mAppearModel_ForGraphics.setMesh(renderModel.getMesh());
 	}
 	public AppearRenderModel getRenderModel() {
 		return mRenderModel;

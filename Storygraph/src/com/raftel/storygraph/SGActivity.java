@@ -49,7 +49,7 @@ public class SGActivity extends Activity implements AppearApplication, OnTouchLi
 
 		mSceneBrowser.setBounds(sceneBrowserBounds);
 		mMainControl.addChild(mSceneBrowser);
-		mMainControl.getMainScene().getRenderNodeList().get(0).addChild(mSceneBrowser.getRenderModel().getModel());
+		mMainControl.getMainScene().getRenderNodeList().get(0).addChild(mSceneBrowser.getRenderModel());
 
 		Bitmap bitmap1 = BitmapFactory.decodeResource(this.getResources(), R.drawable.test_earth);
 		Bitmap bitmap2 = BitmapFactory.decodeResource(this.getResources(), R.drawable.test_book);
