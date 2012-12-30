@@ -14,7 +14,7 @@ public class AppearAnimationManager {
 		return mManager;
 	}
 
-	private AppearAnimationManager() {
+	public AppearAnimationManager() {
 	}
 
 	public AppearAnimation createAnimation(long delay, long duration, int interpolationType) {

@@ -1,20 +1,199 @@
 package com.raftel.storygraph.scenebrowser;
 
+import java.util.ArrayList;
 
+import android.graphics.Bitmap;
+
+import com.raftel.appear.common.AppearBounds;
+import com.raftel.appear.controls.AppearControl;
+import com.raftel.appear.touch.AppearTouchHandler;
+import com.raftel.appear.touch.AppearTouchInfo;
+import com.raftel.appear.graphics.AppearMaterial;
+import com.raftel.appear.graphics.AppearModel;
+import com.raftel.appear.graphics.expand.AppearRectangleMesh;
+import com.raftel.appear.graphics.expand.AppearRenderModel;
+
+public class SGSceneBrowser extends AppearControl {
+	public static class __HorizontalSceneScrolling extends AppearTouchHandler {
+		public boolean onTouchDown(AppearTouchInfo touchInfo) {
+			return true;
+		}
+		public boolean onTouchMove(AppearTouchInfo touchInfo) {
+			return true;
+		}
+		public boolean onTouchUp(AppearTouchInfo touchInfo) {
+			return true;
+		}
+		public boolean onTouchCancel(AppearTouchInfo touchInfo) {
+			return true;
+		}
+	}
+
+	public static class __SceneZooming extends AppearTouchHandler {
+		public boolean onTouchDown(AppearTouchInfo touchInfo) {
+			return true;
+		}
+		public boolean onTouchMove(AppearTouchInfo touchInfo) {
+			return true;
+		}
+		public boolean onTouchUp(AppearTouchInfo touchInfo) {
+			return true;
+		}
+		public boolean onTouchCancel(AppearTouchInfo touchInfo) {
+			return true;
+		}
+	}
+
+	public static class __SceneContainer extends AppearRenderModel {
+		Bitmap mBGBitmap = null;
+		AppearMaterial mMaterial = null;
+		AppearBounds mBounds = null;
+		AppearModel mModel = null;
+		private static final int SG_SCENE_SPLIT = 50;
+
+		public __SceneContainer() {
+			mMaterial = new AppearMaterial();
+			mBounds = new AppearBounds(0, 0, 0, 0);
+			mModel = new AppearModel();
+
+			mMaterial.setColor(0xff00ffff);
+			mModel.setMaterial(mMaterial);
+			mModel.setPickable(true);
+			setModel(mModel);
+		}
+		
+		public void setBGBitmap(Bitmap bitmap) {
+			mBGBitmap = bitmap;
+			mMaterial.setTexture(mBGBitmap, false);
+		}
+		
+		public Bitmap getBGBitmap() {
+			return mBGBitmap;
+		}
+
+		public void setBounds(AppearBounds bounds) {
+			mBounds = bounds;
+			AppearRectangleMesh mesh = new AppearRectangleMesh(mBounds.getWidth(), mBounds.getHeight(), SG_SCENE_SPLIT);
+			mModel.setMesh(mesh);
+			mModel.setTranslation(mBounds.getX(), mBounds.getY(), 0);
+		}
+
+		public AppearBounds getBounds() {
+			return mBounds;
+		}
+
+	}
+
+	public static class __Scene extends AppearRenderModel {
+		Bitmap mBitmap = null;
+		AppearMaterial mMaterial = null;
+		AppearBounds mBounds = null;
+		AppearModel mModel = null;
+		private static final int SG_SCENE_SPLIT = 50;
+
+		public __Scene() {
+			mMaterial = new AppearMaterial();
+			mBounds = new AppearBounds(0, 0, 0, 0);
+			mModel = new AppearModel();
+
+			mMaterial.setColor(0xff00ffff);
+			mModel.setMaterial(mMaterial);
+			mModel.setPickable(true);
+			setModel(mModel);
+		}
+
+		public void setBitmap(Bitmap bitmap) {
+			mBitmap = bitmap;
+			mMaterial.setTexture(mBitmap, false);
+		}
+
+		public Bitmap getBitmap() {
+			return mBitmap;
+		}
+
+		public void setBounds(AppearBounds bounds) {
+			mBounds = bounds;
+			AppearRectangleMesh mesh = new AppearRectangleMesh(mBounds.getWidth(), mBounds.getHeight(), SG_SCENE_SPLIT);
+			mModel.setMesh(mesh);
+			mModel.setTranslation(mBounds.getX(), mBounds.getY(), 0);
+		}
+		
+		public AppearBounds getBounds() {
+			return mBounds;
+		}
+	}
+
+	private __HorizontalSceneScrolling mHorizontalSceneScrolling = null;
+	private __SceneZooming mSceneZooming = null;
+	private __SceneContainer mSceneContainer = null;
+	private ArrayList<__Scene> mSceneList = null;
+	private static final float SG_BROWSER_SCENE_MARGIN = 10;
+	
+	public SGSceneBrowser() {
+		mHorizontalSceneScrolling = new __HorizontalSceneScrolling();
+		mSceneZooming = new __SceneZooming();
+		mSceneContainer = new __SceneContainer();
+		mSceneList = new ArrayList<__Scene>();
+
+		setRenderModel(mSceneContainer);
+		setTouchHandler(mHorizontalSceneScrolling);
+	}
+
+	public void setBounds(AppearBounds bounds) {
+		mSceneContainer.setBounds(bounds);
+	}
+
+	public AppearBounds getBounds() {
+		return mSceneContainer.getBounds();
+	}
+
+	public int addScene(int sceneNum, Bitmap bitmap) {
+		__Scene scene = new __Scene();
+		AppearBounds sceneBounds = new AppearBounds((getBounds().getWidth()*sceneNum)+SG_BROWSER_SCENE_MARGIN, 
+								SG_BROWSER_SCENE_MARGIN, 
+								getBounds().getWidth()-SG_BROWSER_SCENE_MARGIN*2, 
+								getBounds().getHeight()-SG_BROWSER_SCENE_MARGIN*2);
+		scene.setBitmap(bitmap);
+		scene.setBounds(sceneBounds);
+
+		mSceneContainer.getModel().addChild(scene.getModel());
+		mSceneList.add(sceneNum, scene);
+		return mSceneList.size() - 1;
+	}
+
+	public int addScene(Bitmap bitmap) {
+		__Scene scene = new __Scene();
+		AppearBounds sceneBounds = new AppearBounds((getBounds().getWidth()*mSceneList.size())+SG_BROWSER_SCENE_MARGIN, 
+								SG_BROWSER_SCENE_MARGIN, 
+								getBounds().getWidth()-SG_BROWSER_SCENE_MARGIN*2, 
+								getBounds().getHeight()-SG_BROWSER_SCENE_MARGIN*2);
+		scene.setBitmap(bitmap);
+		scene.setBounds(sceneBounds);
+
+		mSceneContainer.getModel().addChild(scene.getModel());
+		mSceneList.add(scene);
+		return mSceneList.size() - 1;
+	}
+
+	public void removeScene(int sceneNum) {
+		mSceneContainer.getModel().removeChild(mSceneList.get(sceneNum).getModel());
+
+		mSceneList.remove(sceneNum);
+	}
+}
+
+/*
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.raftel.appear.animation.AppearAnimation;
-import com.raftel.appear.animation.AppearAnimationManager;
-import com.raftel.appear.animation.AppearAnimationProp;
 import com.raftel.appear.graphics.AppearMaterial;
 import com.raftel.appear.graphics.AppearModel;
 import com.raftel.appear.graphics.AppearNode;
 import com.raftel.appear.graphics.AppearSurface;
-import com.raftel.appear.graphics.expand.AppearRectangleMesh;
-import com.raftel.appear.graphics.expand.AppearSphereMesh;
 import com.raftel.appear.graphics.expand.AppearTouchableScene;
+import com.raftel.appear.graphics.expand.AppearRectangleMesh;
+
 import com.raftel.storygraph.R;
 
 public class SGSceneBrowser extends AppearTouchableScene {
@@ -62,3 +241,4 @@ public class SGSceneBrowser extends AppearTouchableScene {
 		//anim.start();
 	}
 }
+*/
