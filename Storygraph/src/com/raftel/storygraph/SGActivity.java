@@ -28,6 +28,8 @@ public class SGActivity extends Activity implements AppearApplication, OnTouchLi
 		super.onCreate(savedInstanceState);
 		mAppearUX = new AppearUX(this);
 //		mAppearUX.getSurface().setOnTouchListener(this);
+		
+		setContentView(mAppearUX.getSurface());
 	}
 
 	@Override
