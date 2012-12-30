@@ -28,6 +28,7 @@ public class AppearRenderer implements Renderer {
 
 	public interface Callback {
 		public void onSurfaceCreated();
+		public void onSurfaceChanged();
 		public void onDrawFrame();
 	}
 
@@ -59,6 +60,9 @@ public class AppearRenderer implements Renderer {
 	public void onSurfaceChanged(GL10 arg0, int width, int height) {
 		resize(width, height);
 
+		if (mCallback != null)
+			mCallback.onSurfaceChanged();
+		
 		AppearGraphicsUtil.checkError("AppearRenderer", "onSurfaceChanged", "");
 	}
 
