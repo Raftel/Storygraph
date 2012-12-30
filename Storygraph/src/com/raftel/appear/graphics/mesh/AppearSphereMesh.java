@@ -1,20 +1,18 @@
-package com.raftel.appear.graphics.expand;
+package com.raftel.appear.graphics.mesh;
 
 import com.raftel.appear.graphics.AppearMesh;
 
-public class AppearRectangleMesh extends AppearMesh {
+public class AppearSphereMesh extends AppearMesh {
 
-	private float mWidth;
-	private float mHeight;
+	private float mRadius;
 	private int mSplit;
 
-	public AppearRectangleMesh() {
+	public AppearSphereMesh() {
 
 	}
 
-	public AppearRectangleMesh(float width, float height, int split) {
-		mWidth = width;
-		mHeight = height;
+	public AppearSphereMesh(float radius, int split) {
+		mRadius = radius;
 		mSplit = split;
 		
 		int stride = getVertexStride();
@@ -22,14 +20,14 @@ public class AppearRectangleMesh extends AppearMesh {
 		float vertexArray[] = new float[stride * nVertex * nVertex];
 
 		float d = 1.0f / mSplit;
-		float splitWidth = mWidth / split;
-		float splitHeight = mHeight / split;
-		
+		float dth = (float) (2 * Math.PI / mSplit);
+		float dpi = (float) (Math.PI / mSplit);
+
 		for (int i = 0; i < nVertex; i++) {
 			for (int j = 0; j < nVertex; j++) {
-				vertexArray[stride * (i * nVertex + j) + 0] = j * splitWidth;
-				vertexArray[stride * (i * nVertex + j) + 1] = i * splitHeight;
-				vertexArray[stride * (i * nVertex + j) + 2] = 0.0f;
+				vertexArray[stride * (i * nVertex + j) + 0] = (float) (mRadius * Math.cos(dpi * i - Math.PI / 2) * Math.sin(dth * j - Math.PI));
+				vertexArray[stride * (i * nVertex + j) + 1] = (float) (mRadius * Math.sin(dpi * i - Math.PI / 2));
+				vertexArray[stride * (i * nVertex + j) + 2] = (float) (mRadius * Math.cos(dpi * i - Math.PI / 2) * Math.cos(dth * j - Math.PI));
 	
 				vertexArray[stride * (i * nVertex + j) + 3] = d * j;
 				vertexArray[stride * (i * nVertex + j) + 4] = d * i;
@@ -58,27 +56,5 @@ public class AppearRectangleMesh extends AppearMesh {
 		}
 		
 		setIndexArray(indexArray, 6  * mSplit * mSplit);
-	}
-	
-	@Override
-	public float[] getIntersectionPoint(float[] origin, float[] ray) {
-
-		if (ray[2] == 0.0f)
-			return null;
-
-		float point[] = new float[4];
-		float t = -origin[2] / ray[2];
-
-		point[0] = origin[0] + ray[0] * t;
-		point[1] = origin[1] + ray[1] * t;
-		point[2] = 0.0f;
-		point[3] = 1.0f;
-
-		if (point[0] < 0.0f || point[0] > mWidth)
-			return null;
-		if (point[1] < 0.0f || point[1] > mHeight)
-			return null;
-
-		return point;
 	}
 }

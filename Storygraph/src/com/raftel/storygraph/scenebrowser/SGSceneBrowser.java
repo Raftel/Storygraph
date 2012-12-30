@@ -10,8 +10,8 @@ import com.raftel.appear.touch.AppearTouchHandler;
 import com.raftel.appear.touch.AppearTouchInfo;
 import com.raftel.appear.graphics.AppearMaterial;
 import com.raftel.appear.graphics.AppearModel;
-import com.raftel.appear.graphics.expand.AppearRectangleMesh;
 import com.raftel.appear.graphics.expand.AppearRenderModel;
+import com.raftel.appear.graphics.mesh.AppearRectangleMesh;
 
 public class SGSceneBrowser extends AppearControl {
 	public static class __HorizontalSceneScrolling extends AppearTouchHandler {
