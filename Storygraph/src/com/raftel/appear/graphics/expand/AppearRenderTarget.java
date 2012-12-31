@@ -2,17 +2,24 @@ package com.raftel.appear.graphics.expand;
 
 import java.util.ArrayList;
 
-import com.raftel.appear.graphics.AppearNode;
+import com.raftel.appear.graphics.expand.AppearRenderModel;
+import com.raftel.appear.graphics.expand.AppearRenderGraph;
+import com.raftel.appear.graphics.AppearModel;
 
-public class AppearRenderTarget extends AppearNode {
+public class AppearRenderTarget {
 	private AppearRenderGraph mGraph = null;
 	private AppearRenderTarget mParent = null;
 	private ArrayList<AppearRenderTarget> mChildrenList = null;
 	private AppearRenderModel mRenderModel = null;
 
+	// For Graphics
+	public AppearModel mAppearModel_ForGraphics = null;
 
 	public AppearRenderTarget() {
 		mChildrenList = new ArrayList<AppearRenderTarget>();
+
+		// For Graphics
+		mAppearModel_ForGraphics = new AppearModel();
 	}
 
 	public void setGraph(AppearRenderGraph graph) {
@@ -34,10 +41,10 @@ public class AppearRenderTarget extends AppearNode {
 
 			// For Graphics
 			if (parent == null) {
-				setParent(null);
+				mAppearModel_ForGraphics.setParent(null);
 			}
 			else {
-				setParent(parent);
+				mAppearModel_ForGraphics.setParent(parent.mAppearModel_ForGraphics);
 			}
 		}
 	}
@@ -62,7 +69,7 @@ public class AppearRenderTarget extends AppearNode {
 		child.setParent(this);
 
 		// For Graphics
-		addChild(child);
+		mAppearModel_ForGraphics.addChild(child.mAppearModel_ForGraphics);
 
 		return true;
 	}
@@ -78,7 +85,7 @@ public class AppearRenderTarget extends AppearNode {
 		child.setParent(null);
 
 		// For Graphics
-		removeChild(child);
+		mAppearModel_ForGraphics.removeChild(child.mAppearModel_ForGraphics);
 
 		return true;
 	}
@@ -90,13 +97,16 @@ public class AppearRenderTarget extends AppearNode {
 		mChildrenList.clear();
 
 		// For Graphics
-		removeAllChild();
+		mAppearModel_ForGraphics.removeAllChild();
 	}
 
 	public void setRenderModel(AppearRenderModel renderModel) {
 		mRenderModel = renderModel;
+
+		// For Graphics
+		mAppearModel_ForGraphics.setMaterial(renderModel.getMaterial());
+		mAppearModel_ForGraphics.setMesh(renderModel.getMesh());
 	}
-	
 	public AppearRenderModel getRenderModel() {
 		return mRenderModel;
 	}

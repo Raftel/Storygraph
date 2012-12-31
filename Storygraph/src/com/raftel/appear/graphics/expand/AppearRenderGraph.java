@@ -19,7 +19,7 @@ public class AppearRenderGraph {
 		mRootTarget.setGraph(this);
 
 		// For Graphics
-		mRenderNode.addChild(rootTarget);
+		mRenderNode.addChild(rootTarget.mAppearModel_ForGraphics);
 	}
 	
 	public AppearRenderTarget getRootTarget() {
