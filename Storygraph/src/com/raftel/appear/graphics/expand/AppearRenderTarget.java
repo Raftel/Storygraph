@@ -2,24 +2,17 @@ package com.raftel.appear.graphics.expand;
 
 import java.util.ArrayList;
 
-import com.raftel.appear.graphics.expand.AppearRenderModel;
-import com.raftel.appear.graphics.expand.AppearRenderGraph;
-import com.raftel.appear.graphics.AppearModel;
+import com.raftel.appear.graphics.AppearNode;
 
-public class AppearRenderTarget {
+public class AppearRenderTarget extends AppearNode {
 	private AppearRenderGraph mGraph = null;
 	private AppearRenderTarget mParent = null;
 	private ArrayList<AppearRenderTarget> mChildrenList = null;
 	private AppearRenderModel mRenderModel = null;
 
-	// For Graphics
-	public AppearModel mAppearModel_ForGraphics = null;
 
 	public AppearRenderTarget() {
 		mChildrenList = new ArrayList<AppearRenderTarget>();
-
-		// For Graphics
-		mAppearModel_ForGraphics = new AppearModel();
 	}
 
 	public void setGraph(AppearRenderGraph graph) {
@@ -41,10 +34,10 @@ public class AppearRenderTarget {
 
 			// For Graphics
 			if (parent == null) {
-				mAppearModel_ForGraphics.setParent(null);
+				setParent(null);
 			}
 			else {
-				mAppearModel_ForGraphics.setParent(parent.mAppearModel_ForGraphics);
+				setParent(parent);
 			}
 		}
 	}
@@ -69,7 +62,7 @@ public class AppearRenderTarget {
 		child.setParent(this);
 
 		// For Graphics
-		mAppearModel_ForGraphics.addChild(child.mAppearModel_ForGraphics);
+		addChild(child);
 
 		return true;
 	}
@@ -85,7 +78,7 @@ public class AppearRenderTarget {
 		child.setParent(null);
 
 		// For Graphics
-		mAppearModel_ForGraphics.removeChild(child.mAppearModel_ForGraphics);
+		removeChild(child);
 
 		return true;
 	}
@@ -97,16 +90,13 @@ public class AppearRenderTarget {
 		mChildrenList.clear();
 
 		// For Graphics
-		mAppearModel_ForGraphics.removeAllChild();
+		removeAllChild();
 	}
 
 	public void setRenderModel(AppearRenderModel renderModel) {
 		mRenderModel = renderModel;
-
-		// For Graphics
-		mAppearModel_ForGraphics.setMaterial(renderModel.getMaterial());
-		mAppearModel_ForGraphics.setMesh(renderModel.getMesh());
 	}
+	
 	public AppearRenderModel getRenderModel() {
 		return mRenderModel;
 	}
