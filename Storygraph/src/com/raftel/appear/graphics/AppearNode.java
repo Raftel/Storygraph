@@ -111,11 +111,13 @@ public class AppearNode {
 		return true;
 	}
 
-	public void removeAllChild() {
+	public boolean removeAllChild() {
 		for (int i = 0; i < mChildList.size(); i++) {
 			mChildList.get(i).setParent(null);
 		}
 		mChildList.clear();
+		
+		return true;
 	}
 
 	public void setTranslation(float x, float y, float z) {
