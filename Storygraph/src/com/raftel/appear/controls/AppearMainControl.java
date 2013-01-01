@@ -33,7 +33,7 @@ public class AppearMainControl extends AppearControl {
 		mMainScene = new AppearScene();
 		// For Graphics
 		// Set the main render graph to the main scene.
-		mMainScene.addRenderNode(mMainRenderGraph.mRenderNode);
+		mMainScene.addRenderNode(mMainRenderGraph);
 		mAppearUX.getRenderer().setScene(mMainScene);
 	}
 

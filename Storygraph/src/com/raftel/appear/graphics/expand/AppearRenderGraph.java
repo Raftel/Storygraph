@@ -53,25 +53,30 @@ public class AppearRenderGraph extends AppearNode {
 	}
 
 	@Override
+	@Deprecated 
 	public AppearNode getParent() {
 		return null;
 	}
 
 	@Override
+	@Deprecated
 	public void setParent(AppearNode parent) {
 	}
 
 	@Override
+	@Deprecated
 	public boolean addChild(AppearNode node) {
 		return false;
 	}
 
 	@Override
+	@Deprecated
 	public boolean removeChild(AppearNode node) {
 		return false;
 	}
 
 	@Override
+	@Deprecated
 	public boolean removeAllChild() {
 		return false;
 	}	
