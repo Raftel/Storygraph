@@ -14,8 +14,7 @@ public class AppearRenderGraph extends AppearNode {
 		mRootTarget = rootTarget;
 		mRootTarget.setGraph(this);
 
-		// For Graphics
-		addChild(rootTarget.mAppearModel_ForGraphics);
+		super.addChild(rootTarget);
 	}
 	
 	public AppearRenderTarget getRootTarget() {
@@ -32,7 +31,7 @@ public class AppearRenderGraph extends AppearNode {
 				newRenderTarget = new AppearRenderTarget();
 				if (newRenderTarget != null ) {
 					newRenderTarget.setRenderModel(model);
-					parentRenderTarget.addChild(newRenderTarget);
+					parentRenderTarget.addChildTarget(newRenderTarget);
 				}
 			}
 		}
@@ -43,9 +42,9 @@ public class AppearRenderGraph extends AppearNode {
 	public boolean deleteRenderTarget(AppearRenderModel model) {
 		AppearRenderTarget thisRenderTarget = model.getTargetOnRenderGraph(this);
 		if (thisRenderTarget != null) {
-			AppearRenderTarget parentRenderTarget = thisRenderTarget.getParent();
+			AppearRenderTarget parentRenderTarget = thisRenderTarget.getParentTarget();
 			if (parentRenderTarget != null) {
-				parentRenderTarget.removeChild(thisRenderTarget); 
+				parentRenderTarget.removeChildTarget(thisRenderTarget); 
 				return true;
 			}
 		}

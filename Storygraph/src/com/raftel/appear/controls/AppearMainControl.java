@@ -1,13 +1,11 @@
 package com.raftel.appear.controls;
 
-import com.raftel.appear.controls.AppearControl;
+import com.raftel.appear.graphics.AppearScene;
+import com.raftel.appear.graphics.expand.AppearRenderGraph;
+import com.raftel.appear.graphics.expand.AppearRenderTarget;
 import com.raftel.appear.system.AppearUX;
-import com.raftel.appear.controls.AppearDragAndDrop;
 import com.raftel.appear.touch.AppearTouchGraph;
 import com.raftel.appear.touch.AppearTouchTarget;
-import com.raftel.appear.graphics.expand.AppearRenderTarget;
-import com.raftel.appear.graphics.expand.AppearRenderGraph;
-import com.raftel.appear.graphics.AppearScene;
 
 public class AppearMainControl extends AppearControl {
 	private AppearUX mAppearUX= null;
