@@ -2,9 +2,6 @@ package com.raftel.appear.graphics.expand;
 
 import java.util.ArrayList;
 
-import com.raftel.appear.graphics.expand.AppearRenderModel;
-import com.raftel.appear.graphics.expand.AppearRenderGraph;
-import com.raftel.appear.graphics.AppearModel;
 import com.raftel.appear.graphics.AppearNode;
 
 public class AppearRenderTarget extends AppearNode {
@@ -88,11 +85,18 @@ public class AppearRenderTarget extends AppearNode {
 		}
 
 		mChildList.clear();
+		
 		super.removeAllChild();
+		super.addChild(mRenderModel);
 	}
 
 	public void setRenderModel(AppearRenderModel renderModel) {
+		if (mRenderModel != renderModel)
+			super.removeChild(mRenderModel);
+			
 		mRenderModel = renderModel;
+		
+		super.addChild(mRenderModel);
 	}
 
 	public AppearRenderModel getRenderModel() {
