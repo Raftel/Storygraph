@@ -4,14 +4,10 @@ import com.raftel.appear.graphics.expand.AppearRenderModel;
 import com.raftel.appear.graphics.expand.AppearRenderTarget;
 import com.raftel.appear.graphics.AppearNode;
 
-public class AppearRenderGraph {
+public class AppearRenderGraph extends AppearNode {
 	private AppearRenderTarget mRootTarget = null;
 
-	// For Graphics
-	public AppearNode mRenderNode = null;
-	
 	public AppearRenderGraph() {
-		mRenderNode = new AppearNode();
 	}
 
 	public void setRootTarget(AppearRenderTarget rootTarget) {
@@ -19,7 +15,7 @@ public class AppearRenderGraph {
 		mRootTarget.setGraph(this);
 
 		// For Graphics
-		mRenderNode.addChild(rootTarget.mAppearModel_ForGraphics);
+		addChild(rootTarget.mAppearModel_ForGraphics);
 	}
 	
 	public AppearRenderTarget getRootTarget() {
@@ -55,4 +51,28 @@ public class AppearRenderGraph {
 		}
 		return false;
 	}
+
+	@Override
+	public AppearNode getParent() {
+		return null;
+	}
+
+	@Override
+	public void setParent(AppearNode parent) {
+	}
+
+	@Override
+	public boolean addChild(AppearNode node) {
+		return false;
+	}
+
+	@Override
+	public boolean removeChild(AppearNode node) {
+		return false;
+	}
+
+	@Override
+	public boolean removeAllChild() {
+		return false;
+	}	
 }
