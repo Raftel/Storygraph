@@ -5,21 +5,16 @@ import java.util.ArrayList;
 import com.raftel.appear.graphics.expand.AppearRenderModel;
 import com.raftel.appear.graphics.expand.AppearRenderGraph;
 import com.raftel.appear.graphics.AppearModel;
+import com.raftel.appear.graphics.AppearNode;
 
-public class AppearRenderTarget {
+public class AppearRenderTarget extends AppearNode {
 	private AppearRenderGraph mGraph = null;
-	private AppearRenderTarget mParent = null;
-	private ArrayList<AppearRenderTarget> mChildrenList = null;
+	private AppearRenderTarget mParentTarget = null;
+	private ArrayList<AppearRenderTarget> mChildList = null;
 	private AppearRenderModel mRenderModel = null;
 
-	// For Graphics
-	public AppearModel mAppearModel_ForGraphics = null;
-
 	public AppearRenderTarget() {
-		mChildrenList = new ArrayList<AppearRenderTarget>();
-
-		// For Graphics
-		mAppearModel_ForGraphics = new AppearModel();
+		mChildList = new ArrayList<AppearRenderTarget>();
 	}
 
 	public void setGraph(AppearRenderGraph graph) {
@@ -30,84 +25,106 @@ public class AppearRenderTarget {
 		return mGraph;
 	}
 
-	public AppearRenderTarget getParent() {
-		return mParent;
+	public AppearRenderTarget getParentTarget() {
+		return mParentTarget;
 	}
 
-	public void setParent(AppearRenderTarget parent) {
-		if (mParent != parent) {
-			mParent = parent;
-			setGraph(mParent.getGraph());
+	public void setParentTarget(AppearRenderTarget parent) {
+		if (mParentTarget != parent) {
+			mParentTarget = parent;
+			setGraph(mParentTarget.getGraph());
 
 			// For Graphics
 			if (parent == null) {
-				mAppearModel_ForGraphics.setParent(null);
-			}
-			else {
-				mAppearModel_ForGraphics.setParent(parent.mAppearModel_ForGraphics);
+				super.setParent(null);
+			} else {
+				super.setParent(parent);
 			}
 		}
 	}
 
-	public ArrayList<AppearRenderTarget> getChildrenList() {
-		return mChildrenList;
+	public ArrayList<AppearRenderTarget> getChildTargetList() {
+		return mChildList;
 	}
 
-	public boolean addChild(AppearRenderTarget child) {
+	public boolean addChildTarget(AppearRenderTarget child) {
 		if (child == null)
 			return false;
 
-		AppearRenderTarget prevParent = child.getParent();
+		AppearRenderTarget prevParent = child.getParentTarget();
 		if (prevParent == this)
 			return true;
 
 		if (prevParent != null) {
-			prevParent.removeChild(child);
+			prevParent.removeChildTarget(child);
 		}
+		
+		child.setParentTarget(this);
 
-		mChildrenList.add(child);
-		child.setParent(this);
-
-		// For Graphics
-		mAppearModel_ForGraphics.addChild(child.mAppearModel_ForGraphics);
+		mChildList.add(child);
+		super.addChild(child);
 
 		return true;
 	}
 
-	public boolean removeChild(AppearRenderTarget child) {
+	public boolean removeChildTarget(AppearRenderTarget child) {
 		if (child == null)
 			return false;
 
-		if (child.getParent() != this)
+		if (child.getParentTarget() != this)
 			return false;
+		
+		child.setParentTarget(null);
 
-		mChildrenList.remove(child);
-		child.setParent(null);
-
-		// For Graphics
-		mAppearModel_ForGraphics.removeChild(child.mAppearModel_ForGraphics);
+		mChildList.remove(child);
+		super.removeChild(child);
 
 		return true;
 	}
 
-	public void removeChildren() {
-		for (int i = 0; i < mChildrenList.size(); i++) {
-			mChildrenList.get(i).setParent(null);
+	public void removeAllChildTarget() {
+		for (int i = 0; i < mChildList.size(); i++) {
+			mChildList.get(i).setParentTarget(null);
 		}
-		mChildrenList.clear();
 
-		// For Graphics
-		mAppearModel_ForGraphics.removeAllChild();
+		mChildList.clear();
+		super.removeAllChild();
 	}
 
 	public void setRenderModel(AppearRenderModel renderModel) {
 		mRenderModel = renderModel;
-
-		// For Graphics
-		mAppearModel_ForGraphics.setMaterial(renderModel.getMaterial());
-		mAppearModel_ForGraphics.setMesh(renderModel.getMesh());
 	}
+
 	public AppearRenderModel getRenderModel() {
 		return mRenderModel;
+	}
+
+	@Override
+	@Deprecated
+	public AppearNode getParent() {
+		return null;
+	}
+
+	@Override
+	@Deprecated
+	public void setParent(AppearNode parent) {
+	}
+
+	@Override
+	@Deprecated
+	public boolean addChild(AppearNode node) {
+		return false;
+	}
+
+	@Override
+	@Deprecated
+	public boolean removeChild(AppearNode node) {
+		return false;
+	}
+
+	@Override
+	@Deprecated
+	public boolean removeAllChild() {
+		return false;
 	}
 }
