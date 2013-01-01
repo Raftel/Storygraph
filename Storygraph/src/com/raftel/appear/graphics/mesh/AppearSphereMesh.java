@@ -57,4 +57,9 @@ public class AppearSphereMesh extends AppearMesh {
 		
 		setIndexArray(indexArray, 6  * mSplit * mSplit);
 	}
+	
+	public float[] getIntersectionPoint(float[] origin, float[] ray) {
+		// FIXME 
+		return null;
+	}
 }
