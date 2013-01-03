@@ -33,7 +33,7 @@ public class AppearRenderModel extends AppearModel {
 		mTargetList.clear();
 	}
 
-	public AppearRenderTarget getTargetOnRenderGraph(AppearRenderGraph renderGraph) {
+	public AppearRenderTarget getTargetOnGraph(AppearRenderGraph renderGraph) {
 		for (int i = 0; i < mTargetList.size(); i++) {
 			AppearRenderTarget renderTarget = mTargetList.get(i);
 			if (renderTarget.getGraph() == renderGraph) {

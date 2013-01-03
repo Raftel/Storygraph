@@ -33,7 +33,7 @@ public abstract class AppearTouchHandler {
 		mTargetList.clear();
 	}
 
-	public AppearTouchTarget getTargetOnTouchGraph(AppearTouchGraph touchGraph) {
+	public AppearTouchTarget getTargetOnGraph(AppearTouchGraph touchGraph) {
 		for (int i = 0; i < mTargetList.size(); i++) {
 			AppearTouchTarget touchTarget = mTargetList.get(i);
 			if (touchTarget.getGraph() == touchGraph) {

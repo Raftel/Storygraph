@@ -24,14 +24,16 @@ public class AppearMainControl extends AppearControl {
 
 		mMainTouchGraph = new AppearTouchGraph();
 		mMainTouchGraph.setRootTarget(mRootTouchTarget);
+		setTouchGraph(mMainTouchGraph);
 		mAppearUX.getTouchManager().setTouchGraph(mMainTouchGraph);
 
 		mMainRenderGraph = new AppearRenderGraph();
 		mMainRenderGraph.setRootTarget(mRootRenderTarget);
+		setRenderGraph(mMainRenderGraph);
 		mMainScene = new AppearScene();
 		// For Graphics
 		// Set the main render graph to the main scene.
-		mMainScene.addRenderNode(mMainRenderGraph);
+		mMainScene.addRenderNode(mMainRenderGraph.getRootTarget());
 		mAppearUX.getRenderer().setScene(mMainScene);
 	}
 

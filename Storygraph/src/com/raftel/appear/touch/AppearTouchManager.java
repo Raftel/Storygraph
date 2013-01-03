@@ -24,6 +24,11 @@ public class AppearTouchManager {
 		return mTouchGraph;
 	}
 
+	public boolean onTouch(AppearTouchInfo touchInfo) {
+		AppearTouchTarget touchTarget = getTouchGraph().getRootTarget();
+		return onTouchToTarget(touchTarget, touchInfo);
+	}
+
 	private boolean callTouchHandler(AppearTouchHandler touchHandler, AppearTouchInfo touchInfo) {
 		if (touchHandler == null) {
 			return false;
@@ -56,7 +61,7 @@ public class AppearTouchManager {
 			}
 		}
 
-		ArrayList<AppearTouchTarget> childTouchTargetList = touchTarget.getChildrenList();
+		ArrayList<AppearTouchTarget> childTouchTargetList = touchTarget.getChildTargetList();
 		for (int i = 0; i < childTouchTargetList.size(); i++) {
 			AppearTouchTarget childTouchTarget = childTouchTargetList.get(i);
 			touchHandled = onTouchToTarget(childTouchTarget, touchInfo);
@@ -65,10 +70,5 @@ public class AppearTouchManager {
 			}
 		}		
 		return false;
-	}
-
-	public boolean onTouch(AppearTouchInfo touchInfo) {
-		AppearTouchTarget touchTarget = getTouchGraph().getRootTarget();
-		return onTouchToTarget(touchTarget, touchInfo);
 	}
 }

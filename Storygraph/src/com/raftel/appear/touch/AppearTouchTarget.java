@@ -9,11 +9,11 @@ import com.raftel.appear.touch.AppearTouchTarget;
 public class AppearTouchTarget {
 	private AppearTouchGraph mGraph = null;
 	private AppearTouchTarget mParent = null;
-	private ArrayList<AppearTouchTarget> mChildrenList = null;
+	private ArrayList<AppearTouchTarget> mChildList = null;
 	private AppearTouchHandler mTouchHandler = null;
 
 	public AppearTouchTarget() {
-		mChildrenList = new ArrayList<AppearTouchTarget>();
+		mChildList = new ArrayList<AppearTouchTarget>();
 	}
 
 	public AppearTouchGraph getGraph() {
@@ -24,60 +24,64 @@ public class AppearTouchTarget {
 		mGraph = graph;
 	}
 
-	public AppearTouchTarget getParent() {
+	public AppearTouchTarget getParentTarget() {
 		return mParent;
 	}
 
-	public void setParent(AppearTouchTarget parent) {
+	public void setParentTarget(AppearTouchTarget parent) {
 		if (mParent != parent) {
 			mParent = parent;
 			setGraph(mParent.getGraph());
 		}
 	}
 
-	public ArrayList<AppearTouchTarget> getChildrenList() {
-		return mChildrenList;
+	public ArrayList<AppearTouchTarget> getChildTargetList() {
+		return mChildList;
 	}
 
-	public boolean addChild(AppearTouchTarget child) {
+	public boolean addChildTarget(AppearTouchTarget child) {
 		if (child == null)
 			return false;
 
-		AppearTouchTarget prevParent = child.getParent();
+		AppearTouchTarget prevParent = child.getParentTarget();
 		if (prevParent == this)
 			return true;
 
 		if (prevParent != null) {
-			prevParent.removeChild(child);
+			prevParent.removeChildTarget(child);
 		}
 
-		mChildrenList.add(child);
-		child.setParent(this);
+		mChildList.add(child);
+		child.setParentTarget(this);
 
 		return true;
 	}
 
-	public boolean removeChild(AppearTouchTarget child) {
+	public boolean removeChildTarget(AppearTouchTarget child) {
 		if (child == null)
 			return false;
 
-		if (child.getParent() != this)
+		if (child.getParentTarget() != this)
 			return false;
 
-		mChildrenList.remove(child);
-		child.setParent(null);
+		mChildList.remove(child);
+		child.setParentTarget(null);
 
 		return true;
 	}
 
-	public void removeChildren() {
-		for (int i = 0; i < mChildrenList.size(); i++) {
-			mChildrenList.get(i).setParent(null);
+	public void removeAllChildTarget() {
+		for (int i = 0; i < mChildList.size(); i++) {
+			mChildList.get(i).setParentTarget(null);
 		}
-		mChildrenList.clear();
+		mChildList.clear();
 	}
 
 	public void setTouchHandler(AppearTouchHandler touchHandler) {
+		if (mTouchHandler == touchHandler) {
+			return;
+		}
+
 		if (mTouchHandler != null) {
 			mTouchHandler.removeTarget(this);
 		}

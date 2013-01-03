@@ -1,5 +1,7 @@
 package com.raftel.appear.graphics.expand;
 
+import java.util.ArrayList;
+
 import com.raftel.appear.graphics.expand.AppearRenderModel;
 import com.raftel.appear.graphics.expand.AppearRenderTarget;
 import com.raftel.appear.graphics.AppearNode;
@@ -22,16 +24,14 @@ public class AppearRenderGraph extends AppearNode {
 	}
 
 	public AppearRenderTarget newRenderTarget(AppearRenderTarget parent, AppearRenderModel model) {
-		AppearRenderTarget parentRenderTarget = null;
 		AppearRenderTarget newRenderTarget = null;
 
 		if ((parent != null) && (model != null) && (parent.getGraph() == this)) {
-			parentRenderTarget = parent.getRenderModel().getTargetOnRenderGraph(this);
-			if (parentRenderTarget != null) {
+			if (parent != null) {
 				newRenderTarget = new AppearRenderTarget();
 				if (newRenderTarget != null ) {
 					newRenderTarget.setRenderModel(model);
-					parentRenderTarget.addChildTarget(newRenderTarget);
+					parent.addChildTarget(newRenderTarget);
 				}
 			}
 		}
@@ -40,14 +40,24 @@ public class AppearRenderGraph extends AppearNode {
 	}
 
 	public boolean deleteRenderTarget(AppearRenderModel model) {
-		AppearRenderTarget thisRenderTarget = model.getTargetOnRenderGraph(this);
-		if (thisRenderTarget != null) {
-			AppearRenderTarget parentRenderTarget = thisRenderTarget.getParentTarget();
-			if (parentRenderTarget != null) {
-				parentRenderTarget.removeChildTarget(thisRenderTarget); 
-				return true;
+		if (model != null) {
+			AppearRenderTarget renderTarget = model.getTargetOnGraph(this);
+			if (renderTarget != null) {
+				AppearRenderTarget parentRenderTarget = renderTarget.getParentTarget();
+				if (parentRenderTarget != null) {
+					parentRenderTarget.removeChildTarget(renderTarget); 
+
+					ArrayList<AppearRenderTarget> childrenList = renderTarget.getChildTargetList();
+					if (childrenList != null) {
+						for (int i = 0; i < childrenList.size(); i++) {
+							childrenList.get(i).setParentTarget(parentRenderTarget);
+						}
+					}
+					return true;
+				}
 			}
 		}
+
 		return false;
 	}
 

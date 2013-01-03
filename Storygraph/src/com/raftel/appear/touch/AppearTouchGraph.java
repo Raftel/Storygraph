@@ -1,5 +1,7 @@
 package com.raftel.appear.touch;
 
+import java.util.ArrayList;
+
 import com.raftel.appear.touch.AppearTouchTarget;
 import com.raftel.appear.touch.AppearTouchHandler;
 
@@ -19,16 +21,14 @@ public class AppearTouchGraph {
 	}
 
 	public AppearTouchTarget newTouchTarget(AppearTouchTarget parent, AppearTouchHandler handler) {
-		AppearTouchTarget parentTouchTarget = null;
 		AppearTouchTarget newTouchTarget = null;
 
 		if ((parent != null) && (handler != null) && (parent.getGraph() == this)) {
-			parentTouchTarget = parent.getTouchHandler().getTargetOnTouchGraph(this);
-			if (parentTouchTarget != null) {
+			if (parent != null) {
 				newTouchTarget = new AppearTouchTarget();
 				if (newTouchTarget != null ) {
 					newTouchTarget.setTouchHandler(handler);
-					parentTouchTarget.addChild(newTouchTarget);
+					parent.addChildTarget(newTouchTarget);
 				}
 			}
 		}
@@ -37,14 +37,24 @@ public class AppearTouchGraph {
 	}
 
 	public boolean deleteTouchTarget(AppearTouchHandler handler) {
-		AppearTouchTarget thisTouchTarget = handler.getTargetOnTouchGraph(this);
-		if (thisTouchTarget != null) {
-			AppearTouchTarget parentTouchTarget = thisTouchTarget.getParent();
-			if (parentTouchTarget != null) {
-				parentTouchTarget.removeChild(thisTouchTarget); 
-				return true;
+		if (handler != null) {
+			AppearTouchTarget touchTarget = handler.getTargetOnGraph(this);
+			if (touchTarget != null) {
+				AppearTouchTarget parentTouchTarget = touchTarget.getParentTarget();
+				if (parentTouchTarget != null) {
+					parentTouchTarget.removeChildTarget(touchTarget); 
+
+					ArrayList<AppearTouchTarget> childrenList = touchTarget.getChildTargetList();
+					if (childrenList != null) {
+						for (int i = 0; i < childrenList.size(); i++) {
+							childrenList.get(i).setParentTarget(parentTouchTarget);
+						}
+					}
+					return true;
+				}
 			}
 		}
+
 		return false;
 	}
 }
