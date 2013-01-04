@@ -27,9 +27,6 @@ public class SGActivity extends Activity implements AppearApplication, OnTouchLi
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mAppearUX = new AppearUX(this);
-//		mAppearUX.getSurface().setOnTouchListener(this);
-		
-		setContentView(mAppearUX.getSurface());
 	}
 
 	@Override
@@ -46,10 +43,8 @@ public class SGActivity extends Activity implements AppearApplication, OnTouchLi
 
 		mSceneBrowser = new SGSceneBrowser();
 		AppearBounds sceneBrowserBounds = new AppearBounds(0, 0, width, height);
-
 		mSceneBrowser.setBounds(sceneBrowserBounds);
-		mMainControl.addChild(mSceneBrowser);
-		mMainControl.getMainScene().getRenderNodeList().get(0).addChild(mSceneBrowser.getRenderModel());
+		mMainControl.addChildControl(mSceneBrowser);
 
 		Bitmap bitmap1 = BitmapFactory.decodeResource(this.getResources(), R.drawable.test_earth);
 		Bitmap bitmap2 = BitmapFactory.decodeResource(this.getResources(), R.drawable.test_book);

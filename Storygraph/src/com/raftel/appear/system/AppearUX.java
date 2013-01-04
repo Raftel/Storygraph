@@ -13,20 +13,20 @@ import com.raftel.appear.graphics.AppearSurface;
 import com.raftel.appear.animation.AppearAnimationManager;
 
 public class AppearUX implements AppearRenderer.Callback, OnTouchListener {
-	AppearApplication mApplication = null;
-	AppearTouchManager mTouchManager = null;
-	AppearTouchInfo mTouchInfo = null;
-	AppearSurface mGlSurface = null;
-	AppearRenderer mGlRenderer = null;
-	AppearAnimationManager mAnimationManager = null;
-	static boolean mInitialized = false;
+	private static boolean mInitialized = false;
+	private AppearApplication mApplication = null;
+	private AppearTouchManager mTouchManager = null;
+	private AppearTouchInfo mTouchInfo = null;
+	private AppearSurface mGlSurface = null;
+	private AppearRenderer mGlRenderer = null;
+	private AppearAnimationManager mAnimationManager = null;
 
 	public AppearUX(AppearApplication application) {
 		mApplication = application;
 
 		mTouchManager = new AppearTouchManager(this);
 		mTouchInfo = new AppearTouchInfo();
-		mAnimationManager = new AppearAnimationManager();
+		mAnimationManager = AppearAnimationManager.getInstance();
 		mGlSurface = new AppearSurface(mApplication.getCurrentContext()); 
 		mGlSurface.setOnTouchListener(this);
 
