@@ -62,12 +62,6 @@ public class AppearRenderGraph extends AppearNode {
 	}
 
 	@Override
-	@Deprecated 
-	public AppearNode getParent() {
-		return null;
-	}
-
-	@Override
 	@Deprecated
 	public void setParent(AppearNode parent) {
 	}

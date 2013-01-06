@@ -19,6 +19,7 @@ public class AppearControl {
 
 	public AppearControl() {
 		mChildrenList = new ArrayList<AppearControl>();
+		mRenderModel = new AppearRenderModel();
 	}
 
 	public AppearControl getParentControl() {
@@ -31,7 +32,7 @@ public class AppearControl {
 		}
 
 		if ((syncToTouchGraph == true) && (mTouchHandler != null)) {
-			if (parent != null) {
+			if (mParent != null) {
 				AppearTouchTarget parentTarget = getParentTouchTarget();
 				if (parentTarget != null) {
 					AppearTouchGraph parentGraph = parentTarget.getGraph();
@@ -48,7 +49,7 @@ public class AppearControl {
 		}
 		
 		if ((syncToRenderGraph == true) && (mRenderModel != null)) {
-			if (parent != null) {
+			if (mParent != null) {
 				AppearRenderTarget parentTarget = getParentRenderTarget();
 				if (parentTarget != null) {
 					AppearRenderGraph parentGraph = parentTarget.getGraph();
@@ -131,10 +132,6 @@ public class AppearControl {
 
 	public AppearTouchHandler getTouchHandler() {
 		return mTouchHandler;
-	}
-
-	public void setRenderModel(AppearRenderModel renderModel) {
-		mRenderModel = renderModel;
 	}
 
 	public AppearRenderModel getRenderModel() {

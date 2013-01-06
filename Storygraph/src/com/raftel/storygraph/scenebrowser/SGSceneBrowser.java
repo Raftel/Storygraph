@@ -134,8 +134,8 @@ public class SGSceneBrowser extends AppearControl {
 		mSceneContainer = new __SceneContainer();
 		mSceneList = new ArrayList<__Scene>();
 
-		setRenderModel(mSceneContainer);
 		setTouchHandler(mHorizontalSceneScrolling);
+		getRenderModel().addChild(mSceneContainer);
 	}
 
 	public void setBounds(AppearBounds bounds) {

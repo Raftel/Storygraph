@@ -10,11 +10,36 @@ import com.raftel.appear.touch.AppearTouchHandler;
 import com.raftel.appear.touch.AppearTouchInfo;
 import com.raftel.appear.graphics.AppearMaterial;
 import com.raftel.appear.graphics.AppearModel;
-import com.raftel.appear.graphics.expand.AppearRenderTarget;
 import com.raftel.appear.graphics.mesh.AppearRectangleMesh;
+import com.raftel.appear.graphics.expand.AppearRenderModel;
 
 public class AppearImageBrowser extends AppearControl {
-	public static class HorizontalImageScrolling extends AppearTouchHandler {
+	public class HorizontalImageScrolling extends AppearTouchHandler {
+		private float prevX = 0;
+		public boolean onTouchDown(AppearTouchInfo touchInfo) {
+			prevX = touchInfo.getTouchPoint().getX();
+			return true;
+		}
+
+		public boolean onTouchMove(AppearTouchInfo touchInfo) {
+			float currX = touchInfo.getTouchPoint().getX();
+			AppearBounds bounds = mImageFrameContainer.getBounds();
+			bounds.setX(bounds.getX() + (currX - prevX));
+			mImageFrameContainer.setBounds(bounds);
+			prevX = currX;
+			return true;
+		}
+
+		public boolean onTouchUp(AppearTouchInfo touchInfo) {
+			return true;
+		}
+
+		public boolean onTouchCancel(AppearTouchInfo touchInfo) {
+			return true;
+		}
+	}
+
+	public class ImageZooming extends AppearTouchHandler {
 		public boolean onTouchDown(AppearTouchInfo touchInfo) {
 			return true;
 		}
@@ -32,25 +57,7 @@ public class AppearImageBrowser extends AppearControl {
 		}
 	}
 
-	public static class ImageZooming extends AppearTouchHandler {
-		public boolean onTouchDown(AppearTouchInfo touchInfo) {
-			return true;
-		}
-
-		public boolean onTouchMove(AppearTouchInfo touchInfo) {
-			return true;
-		}
-
-		public boolean onTouchUp(AppearTouchInfo touchInfo) {
-			return true;
-		}
-
-		public boolean onTouchCancel(AppearTouchInfo touchInfo) {
-			return true;
-		}
-	}
-
-	public static class ImageFrameContainer extends AppearRenderTarget {
+	public class ImageFrameContainer extends AppearRenderModel {
 		Bitmap mBGBitmap = null;
 		AppearMaterial mMaterial = null;
 		AppearBounds mBounds = null;
@@ -87,7 +94,7 @@ public class AppearImageBrowser extends AppearControl {
 
 	}
 
-	public static class ImageFrame extends AppearRenderTarget {
+	public class ImageFrame extends AppearRenderModel {
 		Bitmap mBitmap = null;
 		AppearMaterial mMaterial = null;
 		AppearBounds mBounds = null;
@@ -135,8 +142,8 @@ public class AppearImageBrowser extends AppearControl {
 		mImageFrameContainer = new ImageFrameContainer();
 		mImageFrameList = new ArrayList<ImageFrame>();
 
-//		setRenderModel(mImageFrameContainer);
-//		setTouchHandler(mHorizontalImageScrolling);
+		setTouchHandler(mHorizontalImageScrolling);
+		getRenderModel().addChild(mImageFrameContainer);
 	}
 
 	public void setBounds(AppearBounds bounds) {
@@ -157,7 +164,7 @@ public class AppearImageBrowser extends AppearControl {
 		imageFrame.setBitmap(bitmap);
 		imageFrame.setBounds(imageFrameBounds);
 
-		mImageFrameContainer.addChildTarget(imageFrame);
+		mImageFrameContainer.addChild(imageFrame);
 		mImageFrameList.add(imageFrameNum, imageFrame);
 		return mImageFrameList.size() - 1;
 	}
@@ -172,13 +179,13 @@ public class AppearImageBrowser extends AppearControl {
 		imageFrame.setBitmap(bitmap);
 		imageFrame.setBounds(imageFrameBounds);
 
-		mImageFrameContainer.addChildTarget(imageFrame);
+		mImageFrameContainer.addChild(imageFrame);
 		mImageFrameList.add(imageFrame);
 		return mImageFrameList.size() - 1;
 	}
 
 	public void removeImage(int imageFrameNum) {
-		mImageFrameContainer.removeChildTarget(mImageFrameList.get(imageFrameNum));
+		mImageFrameContainer.removeChild(mImageFrameList.get(imageFrameNum));
 
 		mImageFrameList.remove(imageFrameNum);
 	}

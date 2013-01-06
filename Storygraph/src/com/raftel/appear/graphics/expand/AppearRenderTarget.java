@@ -14,17 +14,11 @@ import com.raftel.appear.graphics.AppearMesh;
 public class AppearRenderTarget extends AppearModel {
 	private AppearRenderGraph mGraph = null;
 	private AppearRenderTarget mParentTarget = null;
-	private ArrayList<AppearRenderTarget> mChildList = null;
+	private ArrayList<AppearRenderTarget> mChildTargetList = null;
 	private AppearRenderModel mRenderModel = null;
 
 	public AppearRenderTarget() {
-		mChildList = new ArrayList<AppearRenderTarget>();
-
-		// Create the default model.
-		mRenderModel = new AppearRenderModel();
-		if (mRenderModel != null) {
-			mRenderModel.addTarget(this);
-		}
+		mChildTargetList = new ArrayList<AppearRenderTarget>();
 	}
 
 	public void setGraph(AppearRenderGraph graph) {
@@ -43,14 +37,11 @@ public class AppearRenderTarget extends AppearModel {
 		if (mParentTarget != parent) {
 			mParentTarget = parent;
 			setGraph(mParentTarget.getGraph());
-
-			// For Graphics
-			super.setParent(parent);
 		}
 	}
 
 	public ArrayList<AppearRenderTarget> getChildTargetList() {
-		return mChildList;
+		return mChildTargetList;
 	}
 
 	public boolean addChildTarget(AppearRenderTarget child) {
@@ -66,7 +57,7 @@ public class AppearRenderTarget extends AppearModel {
 		}
 	
 		child.setParentTarget(this);
-		mChildList.add(child);
+		mChildTargetList.add(child);
 
 		// For Graphics
 		super.addChild(child);
@@ -82,7 +73,7 @@ public class AppearRenderTarget extends AppearModel {
 			return false;
 		
 		child.setParentTarget(null);
-		mChildList.remove(child);
+		mChildTargetList.remove(child);
 
 		// For Graphics
 		super.removeChild(child);
@@ -91,11 +82,11 @@ public class AppearRenderTarget extends AppearModel {
 	}
 
 	public void removeAllChildTarget() {
-		for (int i = 0; i < mChildList.size(); i++) {
-			mChildList.get(i).setParentTarget(null);
+		for (int i = 0; i < mChildTargetList.size(); i++) {
+			mChildTargetList.get(i).setParentTarget(null);
 		}
 
-		mChildList.clear();
+		mChildTargetList.clear();
 		
 		// For Graphics
 		super.removeAllChild();
@@ -108,9 +99,15 @@ public class AppearRenderTarget extends AppearModel {
 
 		if (mRenderModel != null) {
 			mRenderModel.removeTarget(this);
+			super.removeChild(mRenderModel);
 		}
 
-		renderModel.addTarget(this);			
+		if (renderModel != null) {
+			renderModel.addTarget(this);
+			ArrayList<AppearNode> childList = super.getChildList();
+			childList.add(0, renderModel);
+		}
+
 		mRenderModel = renderModel;
 	}
 
@@ -122,12 +119,22 @@ public class AppearRenderTarget extends AppearModel {
 	// AppearModel
 	@Override
 	public void setMesh(AppearMesh mesh) {
-		super.setMesh(mesh);
-	}
+		if (mRenderModel != null) {
+			mRenderModel.setMesh(mesh);
+		}
+		else {
+			super.setMesh(mesh);
+		}
+ 	}
 
 	@Override
 	public AppearMesh getMesh() {
-		return super.getMesh();
+		if (mRenderModel != null) {
+			return mRenderModel.getMesh();
+		}
+		else {
+			return super.getMesh();
+		}
 	}
 
 	@Override
@@ -188,12 +195,6 @@ public class AppearRenderTarget extends AppearModel {
 	// AppearNode
 	@Override
 	@Deprecated
-	public AppearNode getParent() {
-		return null;
-	}
-
-	@Override
-	@Deprecated
 	public void setParent(AppearNode parent) {
 	}
 
@@ -213,140 +214,5 @@ public class AppearRenderTarget extends AppearModel {
 	@Deprecated
 	public boolean removeAllChild() {
 		return false;
-	}
-
-	@Override
-	public float[] getPosition() {
-		return super.getPosition();
-	}
-
-	@Override
-	public void setTranslation(float x, float y, float z) {
-		super.setTranslation(x, y, z);
-	}
-
-	@Override
-	public void setTranslationX(float x) {
-		super.setTranslationX(x);
-	}
-
-	@Override
-	public void setTranslationY(float y) {
-		super.setTranslationY(y);
-	}
-
-	@Override
-	public void setTranslationZ(float z) {
-		super.setTranslationZ(z);
-	}
-
-	@Override
-	public float[] getTranslation() {
-		return super.getTranslation();
-	}
-
-	@Override
-	public void addTranslation(float x, float y, float z) {
-		super.addTranslation(x, y, z);
-	}
-
-	@Override
-	public void setRotation(float x, float y, float z) {
-		super.setRotation(x, y, z);
-	}
-
-	@Override
-	public void setRotationX(float x) {
-		super.setRotationX(x);
-	}
-
-	@Override
-	public void setRotationY(float y) {
-		super.setRotationY(y);
-	}
-
-	@Override
-	public void setRotationZ(float z) {
-		super.setRotationZ(z);
-	}
-
-	@Override
-	public float[] getRotation() {
-		return super.getRotation();
-	}
-
-	@Override
-	public void addRotation(float x, float y, float z) {
-		super.addRotation(x, y, z);
-	}
-
-	@Override
-	public void setScale(float x, float y, float z) {
-		super.setScale(x, y, z);
-	}
-
-	@Override
-	public void setScaleX(float x) {
-		super.setScaleX(x);
-	}
-
-	@Override
-	public void setScaleY(float y) {
-		super.setScaleY(y);
-	}
-
-	@Override
-	public void setScaleZ(float z) {
-		super.setScaleZ(z);
-	}
-
-	@Override
-	public float[] getScale() {
-		return super.getScale();
-	}
-
-	@Override
-	public void addScale(float x, float y, float z) {
-		super.addScale(x, y, z);
-	}
-
-	@Override
-	public void setMatrixDirty() {
-		super.setMatrixDirty();
-	}
-
-	@Override
-	public float[] getModelMatrix() {
-		return super.getModelMatrix();
-	}
-	
-	@Override
-	public float[] getViewMatrix() {
-		return super.getViewMatrix();
-	}
-
-	@Override
-	public boolean isVisible() {
-		return super.isVisible();
-	}
-
-	@Override
-	public void setVisible(boolean visible) {
-		super.setVisible(visible);
-	}
-
-	@Override
-	public PickedNode findPickedNode(PickedNode pickedNode, float[] matVP, float[] inNear, float[] inFar) {
-		return super.findPickedNode(pickedNode, matVP, inNear, inFar);
-	}
-
-	@Override
-	public boolean isPickable() {
-		return super.isPickable();
-	}
-
-	@Override
-	public void setPickable(boolean pickable) {
-		super.setPickable(pickable);
 	}
 }

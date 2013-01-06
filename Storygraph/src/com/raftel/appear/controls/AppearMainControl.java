@@ -11,16 +11,21 @@ public class AppearMainControl extends AppearControl {
 	private AppearUX mAppearUX= null;
 	private AppearTouchTarget mRootTouchTarget = null;
 	private AppearRenderTarget mRootRenderTarget = null;
-	private AppearDragAndDrop mDragAndDrop = null;
+	private AppearDragAndDropManager mDragAndDropManager = null;
 	private AppearTouchGraph mMainTouchGraph = null;
 	private AppearRenderGraph mMainRenderGraph = null;
 	private AppearScene mMainScene = null;
 	
 	public AppearMainControl(AppearUX appearUX) {
 		mAppearUX = appearUX;
+		mDragAndDropManager = new AppearDragAndDropManager();
+		setTouchHandler(mDragAndDropManager);
+
 		mRootTouchTarget = new AppearTouchTarget();
+		mRootTouchTarget.setTouchHandler(mDragAndDropManager);
+
 		mRootRenderTarget = new AppearRenderTarget();
-		mDragAndDrop = new AppearDragAndDrop(mRootTouchTarget, mRootRenderTarget);
+		mRootRenderTarget.setRenderModel(getRenderModel());
 
 		mMainTouchGraph = new AppearTouchGraph();
 		mMainTouchGraph.setRootTarget(mRootTouchTarget);
@@ -33,7 +38,7 @@ public class AppearMainControl extends AppearControl {
 		mMainScene = new AppearScene();
 		// For Graphics
 		// Set the main render graph to the main scene.
-		mMainScene.addRenderNode(mMainRenderGraph.getRootTarget());
+		mMainScene.addRenderNode(mMainRenderGraph);
 		mAppearUX.getRenderer().setScene(mMainScene);
 	}
 

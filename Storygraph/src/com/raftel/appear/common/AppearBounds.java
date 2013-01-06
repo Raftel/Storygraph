@@ -28,4 +28,27 @@ public class AppearBounds {
 	public float getHeight() {
 		return mHeight;
 	}
+
+	public void setBounds(float x, float y, float width, float height) {
+		mX= x;
+		mY = y;
+		mWidth = width;
+		mHeight = height;		
+	}
+
+	public void setX(float x) {
+		mX= x;
+	}
+
+	public void setY(float y) {
+		mY = y;
+	}
+
+	public void setWidth(float width) {
+		mWidth = width;
+	}
+
+	public void setHeight(float height) {
+		mHeight = height;		
+	}
 }

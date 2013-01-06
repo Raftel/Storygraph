@@ -14,14 +14,14 @@ import com.raftel.appear.common.AppearBounds;
 import com.raftel.appear.system.AppearUX;
 import com.raftel.appear.system.AppearApplication;
 import com.raftel.appear.controls.AppearMainControl;
-import com.raftel.storygraph.scenebrowser.SGSceneBrowser;
+import com.raftel.appear.controls.AppearImageBrowser;
 
 import com.raftel.storygraph.R;
 
 public class SGActivity extends Activity implements AppearApplication, OnTouchListener{
 	private AppearUX mAppearUX = null;
 	private AppearMainControl mMainControl = null;
-	private SGSceneBrowser mSceneBrowser = null;
+	private AppearImageBrowser mImageBrowser = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -38,33 +38,33 @@ public class SGActivity extends Activity implements AppearApplication, OnTouchLi
 
 	// AppearApp
 	public boolean onInitialize(int width, int height) {
-		// Bind to AppearUX the SGSceneBrowser
+		// Bind to AppearUX the ImageBrowser
 		mMainControl = new AppearMainControl(mAppearUX);
 
-		mSceneBrowser = new SGSceneBrowser();
-		AppearBounds sceneBrowserBounds = new AppearBounds(0, 0, width, height);
-		mSceneBrowser.setBounds(sceneBrowserBounds);
-		mMainControl.addChildControl(mSceneBrowser);
+		mImageBrowser = new AppearImageBrowser();
+		AppearBounds imageBrowserBounds = new AppearBounds(0, 0, width, height);
+		mImageBrowser.setBounds(imageBrowserBounds);
+		mMainControl.addChildControl(mImageBrowser);
 
 		Bitmap bitmap1 = BitmapFactory.decodeResource(this.getResources(), R.drawable.test_earth);
 		Bitmap bitmap2 = BitmapFactory.decodeResource(this.getResources(), R.drawable.test_book);
-		mSceneBrowser.addScene(bitmap1);
-		mSceneBrowser.addScene(bitmap2);
-		mSceneBrowser.addScene(bitmap1);
-		mSceneBrowser.addScene(bitmap2);
+		mImageBrowser.addImage(bitmap1);
+		mImageBrowser.addImage(bitmap2);
+		mImageBrowser.addImage(bitmap1);
+		mImageBrowser.addImage(bitmap2);
 
 		return true;
 	}
 
 	public boolean onSurfaceCreated(int width, int height) {
 		AppearBounds bounds = new AppearBounds(0, 0, (float)width, (float)height);
-		mSceneBrowser.setBounds(bounds);
+		mImageBrowser.setBounds(bounds);
 		return true;
 	}
 
 	public boolean onSurfaceChanged(int width, int height) {
 		AppearBounds bounds = new AppearBounds(0, 0, (float)width, (float)height);
-		mSceneBrowser.setBounds(bounds);
+		mImageBrowser.setBounds(bounds);
 		return true;
 	}
 	
@@ -100,7 +100,7 @@ public class SGActivity extends Activity implements AppearRenderer.Callback, OnT
 	AppearSurface mGlSurface; 
 	AppearRenderer mGlRenderer;
 	
-	SGSceneBrowser mSceneBrowser;
+	SGSceneBrowser mImageBrowser;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -123,16 +123,16 @@ public class SGActivity extends Activity implements AppearRenderer.Callback, OnT
     }
 
 	public void onSurfaceCreated() {
-		mSceneBrowser = new SGSceneBrowser(this, mGlSurface);
-		mGlRenderer.setScene(mSceneBrowser);
+		mImageBrowser = new SGSceneBrowser(this, mGlSurface);
+		mGlRenderer.setScene(mImageBrowser);
 	}
 
 	public void onDrawFrame() {
 	}
 
 	public boolean onTouch(View v, MotionEvent event) {
-		if (mSceneBrowser != null)
-			return mSceneBrowser.onTouch(event);
+		if (mImageBrowser != null)
+			return mImageBrowser.onTouch(event);
 		
 		return false;
 	}
