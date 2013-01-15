@@ -10,12 +10,18 @@ import com.raftel.appear.graphics.expand.AppearRenderModel;
 import com.raftel.appear.graphics.expand.AppearRenderGraph;
 
 public class AppearControl {
+	public interface AppearControlDelegator {
+		public boolean onChildControlAdded(AppearControl child, boolean syncToTouchGraph, boolean syncToRenderGraph);
+		public boolean onChildControlRemoved(AppearControl child, boolean syncToTouchGraph, boolean syncToRenderGraph);
+	}
+
 	private AppearControl mParent = null;
 	private ArrayList<AppearControl> mChildrenList = null;
 	private AppearTouchHandler mTouchHandler = null;
 	private AppearRenderModel mRenderModel = null;
 	private AppearTouchGraph mTouchGraph = null;
 	private AppearRenderGraph mRenderGraph = null;
+	private AppearControlDelegator mControlDelegator = null;
 
 	public AppearControl() {
 		mChildrenList = new ArrayList<AppearControl>();
@@ -91,6 +97,10 @@ public class AppearControl {
 		mChildrenList.add(child);
 		child.setParentControl(this, syncToTouchGraph, syncToRenderGraph);
 
+		if (mControlDelegator != null) {
+			mControlDelegator.onChildControlAdded(child, syncToTouchGraph, syncToRenderGraph);
+		}
+
 		return true;
 	}
 
@@ -107,6 +117,10 @@ public class AppearControl {
 
 		mChildrenList.remove(child);
 		child.setParentControl(null, syncToTouchGraph, syncToRenderGraph);
+
+		if (mControlDelegator != null) {
+			mControlDelegator.onChildControlRemoved(child, syncToTouchGraph, syncToRenderGraph);
+		}
 
 		return true;
 	}
@@ -152,6 +166,14 @@ public class AppearControl {
 
 	public AppearRenderGraph getRenderGraph() {
 		return mRenderGraph;
+	}
+
+	public void setControlDelegator(AppearControlDelegator delegator) {
+		mControlDelegator = delegator;
+	}
+
+	public AppearControlDelegator getControlDelegator() {
+		return mControlDelegator;
 	}
 
 	private AppearTouchTarget getAssociatedTouchTarget() {
