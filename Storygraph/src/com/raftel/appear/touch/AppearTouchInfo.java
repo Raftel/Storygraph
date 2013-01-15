@@ -3,23 +3,23 @@ package com.raftel.appear.touch;
 import com.raftel.appear.common.AppearPoint;
 
 public class AppearTouchInfo {
-	private AppearTouchAction mTouchAction = AppearTouchAction.APPEAR_TOUCH_DOWN;
+	private TouchAction mTouchAction = TouchAction.TOUCH_DOWN;
 	private AppearPoint mTouchPoint = null;
 
-	public static enum AppearTouchAction {APPEAR_TOUCH_DOWN, 
-								APPEAR_TOUCH_MOVE, 
-								APPEAR_TOUCH_UP,
-								APPEAR_TOUCH_CANCEL;}
+	public static enum TouchAction {TOUCH_DOWN, 
+								TOUCH_MOVE, 
+								TOUCH_UP,
+								TOUCH_CANCEL;}
 	
 	public AppearTouchInfo() {
 		mTouchPoint = new AppearPoint(0, 0);
 	}
 
-	public AppearTouchAction getTouchAction() {
+	public TouchAction getTouchAction() {
 		return mTouchAction;
 	}
 
-	public void setTouchAction(AppearTouchAction touchAction) {
+	public void setTouchAction(TouchAction touchAction) {
 		mTouchAction = touchAction;
 	}
 

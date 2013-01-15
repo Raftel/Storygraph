@@ -35,16 +35,16 @@ public class AppearTouchManager {
 		}
 
 		switch (touchInfo.getTouchAction()) {
-		case APPEAR_TOUCH_DOWN:
+		case TOUCH_DOWN:
 			return touchHandler.onTouchDown(touchInfo);
 
-		case APPEAR_TOUCH_MOVE:
+		case TOUCH_MOVE:
 			return touchHandler.onTouchMove(touchInfo);
 
-		case APPEAR_TOUCH_UP:
+		case TOUCH_UP:
 			return touchHandler.onTouchUp(touchInfo);
 
-		case APPEAR_TOUCH_CANCEL:
+		case TOUCH_CANCEL:
 			return touchHandler.onTouchCancel(touchInfo);
 		}
 

@@ -62,19 +62,19 @@ public class AppearUX implements AppearRenderer.Callback, OnTouchListener {
 
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN :
-			mTouchInfo.setTouchAction(AppearTouchInfo.AppearTouchAction.APPEAR_TOUCH_DOWN);
+			mTouchInfo.setTouchAction(AppearTouchInfo.TouchAction.TOUCH_DOWN);
 			break;
 			
 		case MotionEvent.ACTION_MOVE:
-			mTouchInfo.setTouchAction(AppearTouchInfo.AppearTouchAction.APPEAR_TOUCH_MOVE);
+			mTouchInfo.setTouchAction(AppearTouchInfo.TouchAction.TOUCH_MOVE);
 			break;
 			
 		case MotionEvent.ACTION_UP:
-			mTouchInfo.setTouchAction(AppearTouchInfo.AppearTouchAction.APPEAR_TOUCH_UP);
+			mTouchInfo.setTouchAction(AppearTouchInfo.TouchAction.TOUCH_UP);
 			break;
 
 		case MotionEvent.ACTION_CANCEL:
-			mTouchInfo.setTouchAction(AppearTouchInfo.AppearTouchAction.APPEAR_TOUCH_CANCEL);
+			mTouchInfo.setTouchAction(AppearTouchInfo.TouchAction.TOUCH_CANCEL);
 			break;
 		}
 	
