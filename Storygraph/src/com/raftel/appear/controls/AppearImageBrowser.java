@@ -61,7 +61,7 @@ public class AppearImageBrowser extends AppearControl {
 		Bitmap mBGBitmap = null;
 		AppearMaterial mMaterial = null;
 		AppearBounds mBounds = null;
-		private static final int SG_SCENE_SPLIT = 50;
+		private static final int IMAGE_BROWSER_SPLIT = 50;
 
 		public ImageFrameContainer() {
 			mMaterial = new AppearMaterial();
@@ -83,7 +83,7 @@ public class AppearImageBrowser extends AppearControl {
 
 		public void setBounds(AppearBounds bounds) {
 			mBounds = bounds;
-			AppearRectangleMesh mesh = new AppearRectangleMesh(mBounds.getWidth(), mBounds.getHeight(), SG_SCENE_SPLIT);
+			AppearRectangleMesh mesh = new AppearRectangleMesh(mBounds.getWidth(), mBounds.getHeight(), IMAGE_BROWSER_SPLIT);
 			setMesh(mesh);
 			setTranslation(mBounds.getX(), mBounds.getY(), 0);
 		}
@@ -98,7 +98,7 @@ public class AppearImageBrowser extends AppearControl {
 		Bitmap mBitmap = null;
 		AppearMaterial mMaterial = null;
 		AppearBounds mBounds = null;
-		private static final int SG_SCENE_SPLIT = 50;
+		private static final int IMAGE_BROWSER_SPLIT = 50;
 
 		public ImageFrame() {
 			mMaterial = new AppearMaterial();
@@ -120,7 +120,7 @@ public class AppearImageBrowser extends AppearControl {
 
 		public void setBounds(AppearBounds bounds) {
 			mBounds = bounds;
-			AppearRectangleMesh mesh = new AppearRectangleMesh(mBounds.getWidth(), mBounds.getHeight(), SG_SCENE_SPLIT);
+			AppearRectangleMesh mesh = new AppearRectangleMesh(mBounds.getWidth(), mBounds.getHeight(), IMAGE_BROWSER_SPLIT);
 			setMesh(mesh);
 			setTranslation(mBounds.getX(), mBounds.getY(), 0);
 		}
@@ -134,7 +134,7 @@ public class AppearImageBrowser extends AppearControl {
 	private ImageZooming mImageZooming = null;
 	private ImageFrameContainer mImageFrameContainer = null;
 	private ArrayList<ImageFrame> mImageFrameList = null;
-	private static final float SG_BROWSER_SCENE_MARGIN = 10;
+	private static final float IMAGE_BROWSER_FRAME_MARGIN = 10;
 
 	public AppearImageBrowser() {
 		mHorizontalImageScrolling = new HorizontalImageScrolling();
@@ -157,10 +157,10 @@ public class AppearImageBrowser extends AppearControl {
 	public int addImage(int imageFrameNum, Bitmap bitmap) {
 		ImageFrame imageFrame = new ImageFrame();
 		AppearBounds imageFrameBounds = new AppearBounds((
-				getBounds().getWidth() * imageFrameNum) + SG_BROWSER_SCENE_MARGIN, 
-				SG_BROWSER_SCENE_MARGIN, 
-				getBounds().getWidth() - SG_BROWSER_SCENE_MARGIN * 2,
-				getBounds().getHeight() - SG_BROWSER_SCENE_MARGIN * 2);
+				getBounds().getWidth() * imageFrameNum) + IMAGE_BROWSER_FRAME_MARGIN, 
+				IMAGE_BROWSER_FRAME_MARGIN, 
+				getBounds().getWidth() - IMAGE_BROWSER_FRAME_MARGIN * 2,
+				getBounds().getHeight() - IMAGE_BROWSER_FRAME_MARGIN * 2);
 		imageFrame.setBitmap(bitmap);
 		imageFrame.setBounds(imageFrameBounds);
 
@@ -172,10 +172,10 @@ public class AppearImageBrowser extends AppearControl {
 	public int addImage(Bitmap bitmap) {
 		ImageFrame imageFrame = new ImageFrame();
 		AppearBounds imageFrameBounds = new AppearBounds((
-				getBounds().getWidth() * mImageFrameList.size()) + SG_BROWSER_SCENE_MARGIN, 
-				SG_BROWSER_SCENE_MARGIN, 
-				getBounds().getWidth() - SG_BROWSER_SCENE_MARGIN * 2, 
-				getBounds().getHeight() - SG_BROWSER_SCENE_MARGIN * 2);
+				getBounds().getWidth() * mImageFrameList.size()) + IMAGE_BROWSER_FRAME_MARGIN, 
+				IMAGE_BROWSER_FRAME_MARGIN, 
+				getBounds().getWidth() - IMAGE_BROWSER_FRAME_MARGIN * 2, 
+				getBounds().getHeight() - IMAGE_BROWSER_FRAME_MARGIN * 2);
 		imageFrame.setBitmap(bitmap);
 		imageFrame.setBounds(imageFrameBounds);
 
