@@ -6,23 +6,24 @@ import com.raftel.appear.graphics.expand.AppearRenderTarget;
 import com.raftel.appear.system.AppearUX;
 import com.raftel.appear.touch.AppearTouchGraph;
 import com.raftel.appear.touch.AppearTouchTarget;
+import com.raftel.appear.controls.AppearDnDManager;
 
 public class AppearMainControl extends AppearControl {
 	private AppearUX mAppearUX= null;
 	private AppearTouchTarget mRootTouchTarget = null;
 	private AppearRenderTarget mRootRenderTarget = null;
-	private AppearDragAndDropManager mDragAndDropManager = null;
+	private AppearDnDManager mDnDManager = null;
 	private AppearTouchGraph mMainTouchGraph = null;
 	private AppearRenderGraph mMainRenderGraph = null;
 	private AppearScene mMainScene = null;
 	
 	public AppearMainControl(AppearUX appearUX) {
 		mAppearUX = appearUX;
-		mDragAndDropManager = new AppearDragAndDropManager();
-		setTouchHandler(mDragAndDropManager);
+		mDnDManager = new AppearDnDManager();
+		setTouchHandler(mDnDManager);
 
 		mRootTouchTarget = new AppearTouchTarget();
-		mRootTouchTarget.setTouchHandler(mDragAndDropManager);
+		mRootTouchTarget.setTouchHandler(mDnDManager);
 
 		mRootRenderTarget = new AppearRenderTarget();
 		mRootRenderTarget.setRenderModel(getRenderModel());
@@ -52,5 +53,9 @@ public class AppearMainControl extends AppearControl {
 
 	public AppearScene getMainScene() {
 		return mMainScene;
+	}
+
+	public AppearDnDManager getDnDManager() {
+		return mDnDManager;
 	}
 }
