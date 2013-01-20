@@ -8,24 +8,125 @@ import com.raftel.appear.touch.AppearTouchGraph;
 import com.raftel.appear.graphics.expand.AppearRenderTarget;
 import com.raftel.appear.graphics.expand.AppearRenderModel;
 import com.raftel.appear.graphics.expand.AppearRenderGraph;
+import com.raftel.appear.graphics.AppearMesh;
 
 public class AppearControl {
-	public interface AppearControlDelegator {
-		public boolean onChildControlAdded(AppearControl child, boolean syncToTouchGraph, boolean syncToRenderGraph);
-		public boolean onChildControlRemoved(AppearControl child, boolean syncToTouchGraph, boolean syncToRenderGraph);
+	public interface Delegator {
+	}
+
+	public interface NotificationListener {
+		public void onParentControlChanged(AppearControl parent, boolean syncToTouchGraph, boolean syncToRenderGraph);
+		public void onChildControlAdded(AppearControl child, boolean syncToTouchGraph, boolean syncToRenderGraph);
+		public void onChildControlRemoved(AppearControl child, boolean syncToTouchGraph, boolean syncToRenderGraph);
+		public void onTranslationChanged(float x, float y, float z);
+		public void onRotationChanged(float x, float y, float z);
+		public void onScaleChanged(float x, float y, float z);
+		public void onMeshChanged(AppearMesh mesh);
+	}
+
+	public class Notifier implements NotificationListener {
+		private ArrayList<NotificationListener> mListenerList = null;
+		
+		public Notifier() {
+			mListenerList = new ArrayList<NotificationListener>();
+		}
+
+		public boolean addListener(NotificationListener listener) {
+			if (listener != null) {
+				mListenerList.add(listener);
+				return true;
+			}
+			return false;
+		}
+
+		public boolean removeListener(NotificationListener listener) {
+			if (listener != null) {
+				mListenerList.remove(listener);
+				return true;
+			}
+			return false;
+		}
+
+		public void removeAllListener() {
+			mListenerList.clear();
+		}
+
+		public void onParentControlChanged(AppearControl parent, boolean syncToTouchGraph, boolean syncToRenderGraph) {
+			for (int i = 0; i < mListenerList.size(); i++) {
+				NotificationListener listener = mListenerList.get(i);
+				if (listener != null ) {
+					listener.onParentControlChanged(parent, syncToTouchGraph, syncToRenderGraph);
+				}
+			}
+		}
+		
+		public void onChildControlAdded(AppearControl child, boolean syncToTouchGraph, boolean syncToRenderGraph) {
+			for (int i = 0; i < mListenerList.size(); i++) {
+				NotificationListener listener = mListenerList.get(i);
+				if (listener != null ) {
+					listener.onChildControlAdded(child, syncToTouchGraph, syncToRenderGraph);
+				}
+			}
+		}
+		
+		public void onChildControlRemoved(AppearControl child, boolean syncToTouchGraph, boolean syncToRenderGraph) {
+			for (int i = 0; i < mListenerList.size(); i++) {
+				NotificationListener listener = mListenerList.get(i);
+				if (listener != null ) {
+					listener.onChildControlRemoved(child, syncToTouchGraph, syncToRenderGraph);
+				}
+			}
+		}
+		
+		public void onTranslationChanged(float x, float y, float z) {
+			for (int i = 0; i < mListenerList.size(); i++) {
+				NotificationListener listener = mListenerList.get(i);
+				if (listener != null ) {
+					listener.onTranslationChanged(x, y, z);
+				}
+			}
+		}
+		
+		public void onRotationChanged(float x, float y, float z) {
+			for (int i = 0; i < mListenerList.size(); i++) {
+				NotificationListener listener = mListenerList.get(i);
+				if (listener != null ) {
+					listener.onRotationChanged(x, y, z);
+				}
+			}
+		}
+		
+		public void onScaleChanged(float x, float y, float z) {
+			for (int i = 0; i < mListenerList.size(); i++) {
+				NotificationListener listener = mListenerList.get(i);
+				if (listener != null ) {
+					listener.onScaleChanged(x, y, z);
+				}
+			}
+		}
+		
+		public void onMeshChanged(AppearMesh mesh) {
+			for (int i = 0; i < mListenerList.size(); i++) {
+				NotificationListener listener = mListenerList.get(i);
+				if (listener != null ) {
+					listener.onMeshChanged(mesh);
+				}
+			}
+		}
 	}
 
 	private AppearControl mParent = null;
-	private ArrayList<AppearControl> mChildrenList = null;
+	private ArrayList<AppearControl> mChildControlList = null;
 	private AppearTouchHandler mTouchHandler = null;
 	private AppearRenderModel mRenderModel = null;
 	private AppearTouchGraph mTouchGraph = null;
 	private AppearRenderGraph mRenderGraph = null;
-	private AppearControlDelegator mControlDelegator = null;
+	private Notifier mNotifier = null;
 
 	public AppearControl() {
-		mChildrenList = new ArrayList<AppearControl>();
+		mChildControlList = new ArrayList<AppearControl>();
 		mRenderModel = new AppearRenderModel();
+		mNotifier = new Notifier();
 	}
 
 	public AppearControl getParentControl() {
@@ -70,6 +171,8 @@ public class AppearControl {
 				mRenderGraph = null;
 			}
 		}
+
+		mNotifier.onParentControlChanged(parent, syncToTouchGraph, syncToRenderGraph);
 	}
 
 	public void setParentControl(AppearControl parent) {
@@ -77,7 +180,7 @@ public class AppearControl {
 	}
 
 	public ArrayList<AppearControl> getChildControlList() {
-		return mChildrenList;
+		return mChildControlList;
 	}
 
 	public boolean addChildControl(AppearControl child, boolean syncToTouchGraph, boolean syncToRenderGraph) {
@@ -94,12 +197,10 @@ public class AppearControl {
 			prevParent.removeChildControl(child, syncToTouchGraph, syncToRenderGraph);
 		}
 
-		mChildrenList.add(child);
+		mChildControlList.add(child);
 		child.setParentControl(this, syncToTouchGraph, syncToRenderGraph);
 
-		if (mControlDelegator != null) {
-			mControlDelegator.onChildControlAdded(child, syncToTouchGraph, syncToRenderGraph);
-		}
+		mNotifier.onChildControlAdded(child, syncToTouchGraph, syncToRenderGraph);
 
 		return true;
 	}
@@ -115,12 +216,10 @@ public class AppearControl {
 		if (child.getParentControl() != this)
 			return false;
 
-		mChildrenList.remove(child);
+		mChildControlList.remove(child);
 		child.setParentControl(null, syncToTouchGraph, syncToRenderGraph);
 
-		if (mControlDelegator != null) {
-			mControlDelegator.onChildControlRemoved(child, syncToTouchGraph, syncToRenderGraph);
-		}
+		mNotifier.onChildControlRemoved(child, syncToTouchGraph, syncToRenderGraph);
 
 		return true;
 	}
@@ -130,10 +229,11 @@ public class AppearControl {
 	}
 
 	public void removeAllChildControl(boolean syncToTouchGraph, boolean syncToRenderGraph) {
-		for (int i = 0; i < mChildrenList.size(); i++) {
-			mChildrenList.get(i).setParentControl(null, syncToTouchGraph, syncToRenderGraph);
+		for (int i = 0; i < mChildControlList.size(); i++) {
+			mChildControlList.get(i).setParentControl(null, syncToTouchGraph, syncToRenderGraph);
+			mNotifier.onChildControlRemoved(mChildControlList.get(i), syncToTouchGraph, syncToRenderGraph);
 		}
-		mChildrenList.clear();
+		mChildControlList.clear();
 	}
 
 	public void removeAllChildControl() {
@@ -168,12 +268,187 @@ public class AppearControl {
 		return mRenderGraph;
 	}
 
-	public void setControlDelegator(AppearControlDelegator delegator) {
-		mControlDelegator = delegator;
+	public void addNotificationListener(NotificationListener listener) {
+		mNotifier.addListener(listener);
 	}
 
-	public AppearControlDelegator getControlDelegator() {
-		return mControlDelegator;
+	public void removeNotificationListener(NotificationListener listener) {
+		mNotifier.removeListener(listener);
+	}
+
+	public void setTranslation(float x, float y, float z) {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			renderTarget.setTranslation(x, y, z);
+			mNotifier.onTranslationChanged(x, y, z);
+		}
+	}
+
+	public void setTranslationX(float x) {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			renderTarget.setTranslationX(x);
+			float[] translation = renderTarget.getTranslation();
+			mNotifier.onTranslationChanged(translation[0], translation[1], translation[2]);
+		}
+	}
+
+	public void setTranslationY(float y) {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			renderTarget.setTranslationY(y);
+			float[] translation = renderTarget.getTranslation();
+			mNotifier.onTranslationChanged(translation[0], translation[1], translation[2]);
+		}
+	}
+
+	public void setTranslationZ(float z) {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			renderTarget.setTranslationZ(z);
+			float[] translation = renderTarget.getTranslation();
+			mNotifier.onTranslationChanged(translation[0], translation[1], translation[2]);
+		}
+	}
+
+	public float[] getTranslation() {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			return renderTarget.getTranslation();
+		}
+
+		return null;
+	}
+
+	public void addTranslation(float x, float y, float z) {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			renderTarget.addTranslation(x, y, z);
+			float[] translation = renderTarget.getTranslation();
+			mNotifier.onTranslationChanged(translation[0], translation[1], translation[2]);
+		}
+	}
+
+	public void setRotation(float x, float y, float z) {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			renderTarget.setRotation(x, y, z);
+			mNotifier.onRotationChanged(x, y, z);
+		}
+	}
+
+	public void setRotationX(float x) {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			renderTarget.setRotationX(x);
+			float[] rotation = renderTarget.getRotation();
+			mNotifier.onRotationChanged(rotation[0], rotation[1], rotation[2]);
+		}
+	}
+
+	public void setRotationY(float y) {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			renderTarget.setRotationY(y);
+			float[] rotation = renderTarget.getRotation();
+			mNotifier.onRotationChanged(rotation[0], rotation[1], rotation[2]);
+		}
+	}
+
+	public void setRotationZ(float z) {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			renderTarget.setRotationZ(z);
+			float[] rotation = renderTarget.getRotation();
+			mNotifier.onRotationChanged(rotation[0], rotation[1], rotation[2]);
+		}
+	}
+
+	public float[] getRotation() {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			return renderTarget.getRotation();
+		}
+
+		return null;
+	}
+
+	public void addRotation(float x, float y, float z) {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			renderTarget.addRotation(x, y, z);
+			float[] rotation = renderTarget.getRotation();
+			mNotifier.onRotationChanged(rotation[0], rotation[1], rotation[2]);
+		}
+	}
+
+	public void setScale(float x, float y, float z) {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			renderTarget.setScale(x, y, z);
+			mNotifier.onScaleChanged(x, y, z);
+		}
+	}
+
+	public void setScaleX(float x) {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			renderTarget.setScaleX(x);
+			float[] scale = renderTarget.getScale();
+			mNotifier.onScaleChanged(scale[0], scale[1], scale[2]);
+		}
+	}
+
+	public void setScaleY(float y) {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			renderTarget.setScaleY(y);
+			float[] scale = renderTarget.getScale();
+			mNotifier.onScaleChanged(scale[0], scale[1], scale[2]);
+		}
+	}
+
+	public void setScaleZ(float z) {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			renderTarget.setScaleZ(z);
+			float[] scale = renderTarget.getScale();
+			mNotifier.onScaleChanged(scale[0], scale[1], scale[2]);
+		}
+	}
+
+	public float[] getScale() {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			return renderTarget.getScale();
+		}
+
+		return null;
+	}
+
+	public void addScale(float x, float y, float z) {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			renderTarget.addScale(x, y, z);
+			float[] scale = renderTarget.getScale();
+			mNotifier.onScaleChanged(scale[0], scale[1], scale[2]);
+		}
+	}
+
+	public void setMesh(AppearMesh mesh) {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			renderTarget.setMesh(mesh);
+		}
+	}
+
+	public AppearMesh getMesh() {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			return renderTarget.getMesh();
+		}
+
+		return null;
 	}
 
 	private AppearTouchTarget getAssociatedTouchTarget() {

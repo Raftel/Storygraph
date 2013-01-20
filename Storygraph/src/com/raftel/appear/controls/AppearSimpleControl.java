@@ -1,28 +1,12 @@
 package com.raftel.appear.controls;
 
-import android.graphics.Bitmap;
-
-import com.raftel.appear.common.AppearBounds;
-
 import com.raftel.appear.controls.AppearControl;
 import com.raftel.appear.touch.AppearTouchHandler;
 import com.raftel.appear.touch.AppearTouchInfo;
-import com.raftel.appear.graphics.AppearMaterial;
-import com.raftel.appear.graphics.mesh.AppearRectangleMesh;
-import com.raftel.appear.graphics.expand.AppearRenderModel;
+import com.raftel.appear.graphics.AppearMesh;
 
-public class AppearSimpleControl extends AppearControl {
-	public class SimpleControlDelegator implements AppearControlDelegator {
-		public boolean onChildControlAdded(AppearControl child, boolean syncToTouchGraph, boolean syncToRenderGraph) {
-			return onChildControlAdded(child, syncToTouchGraph, syncToRenderGraph);
-		}
-		
-		public boolean onChildControlRemoved(AppearControl child, boolean syncToTouchGraph, boolean syncToRenderGraph) {
-			return onChildControlRemoved(child, syncToTouchGraph, syncToRenderGraph);
-		}
-	}
-
-	public class SimpleControlTouchHandler extends AppearTouchHandler {
+public abstract class AppearSimpleControl extends AppearControl implements AppearControl.NotificationListener {
+	public class TouchHandler extends AppearTouchHandler {
 		public boolean onTouchDown(AppearTouchInfo touchInfo) {
 			return onTouchDown(touchInfo);
 		}
@@ -40,58 +24,24 @@ public class AppearSimpleControl extends AppearControl {
 		}
 	}
 
-	public class SimpleControlBG extends AppearRenderModel {
-		Bitmap mBGBitmap = null;
-		AppearMaterial mMaterial = null;
-		AppearBounds mBounds = null;
-		private static final int SIMPLE_CONTROL_BG_SPLIT = 50;
-
-		public SimpleControlBG() {
-			mMaterial = new AppearMaterial();
-			mBounds = new AppearBounds(0, 0, 0, 0);
-
-			mMaterial.setColor(0xff00ffff);
-			setMaterial(mMaterial);
-			setPickable(true);
-		}
-
-		public void setBGBitmap(Bitmap bitmap) {
-			mBGBitmap = bitmap;
-			mMaterial.setTexture(mBGBitmap, false);
-		}
-
-		public Bitmap getBGBitmap() {
-			return mBGBitmap;
-		}
-
-		public void setBounds(AppearBounds bounds) {
-			mBounds = bounds;
-			AppearRectangleMesh mesh = new AppearRectangleMesh(mBounds.getWidth(), mBounds.getHeight(), SIMPLE_CONTROL_BG_SPLIT);
-			setMesh(mesh);
-			setTranslation(mBounds.getX(), mBounds.getY(), 0);
-
-			onBoundsChanged(mBounds);
-		}
-
-		public AppearBounds getBounds() {
-			return mBounds;
-		}
-
-	}
-
-	private SimpleControlDelegator mSimpleControlDelegator = null;
-	private SimpleControlTouchHandler mSimpleControlTouchHandler = null;
-	private SimpleControlBG mSimpleControlBG = null;
+	private TouchHandler mTouchHandler = new TouchHandler();
 
 	public AppearSimpleControl() {
-		mSimpleControlDelegator = new SimpleControlDelegator();
-		mSimpleControlTouchHandler = new SimpleControlTouchHandler();
-		mSimpleControlBG = new SimpleControlBG();
-		setControlDelegator(mSimpleControlDelegator);
-		setTouchHandler(mSimpleControlTouchHandler);
-		getRenderModel().addChild(mSimpleControlBG);
+		addNotificationListener(this);
+		setTouchHandler(mTouchHandler);
 	}
 
+	@Override
+	public void setTouchHandler(AppearTouchHandler touchHandler) {
+		if (touchHandler == null) {
+			setTouchHandler(mTouchHandler);
+		}
+		else {
+			setTouchHandler(touchHandler);
+		}
+	}
+
+	// For default touch handling
 	public boolean onTouchDown (AppearTouchInfo touchInfo) {
 		return false;
 	}
@@ -108,16 +58,96 @@ public class AppearSimpleControl extends AppearControl {
 		return false;
 	}
 
-	public boolean onChildControlAdded (AppearControl child, boolean syncToTouchGraph, boolean syncToRenderGraph) {
-		return true;
+	// For default listener.
+	public void onParentControlChanged(AppearControl parent, boolean syncToTouchGraph, boolean syncToRenderGraph) {
+	}
+	
+	public void onChildControlAdded(AppearControl child, boolean syncToTouchGraph, boolean syncToRenderGraph) {
+	}
+	
+	public void onChildControlRemoved(AppearControl child, boolean syncToTouchGraph, boolean syncToRenderGraph) {
+	}
+	
+	public void onTranslationChanged(float x, float y, float z) {
+	}
+	
+	public void onRotationChanged(float x, float y, float z) {
+	}
+	
+	public void onScaleChanged(float x, float y, float z) {
+	}
+	
+	public void onMeshChanged(AppearMesh mesh) {
 	}
 
-	public boolean onChildControlRemoved (AppearControl child, boolean syncToTouchGraph, boolean syncToRenderGraph) {
-		return true;
+/*
+	public void setSize(float width, float height) {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			renderTarget.setMesh(new AppearRectangleMesh(width, height, 50));
+			if (mControlEventHandler != null) {
+				mControlEventHandler.onSizeChanged(width, height);
+			}
+		}
 	}
 
-	public boolean onBoundsChanged (AppearBounds bounds) {
-		return true;
+	public void setSizeWidth(float width) {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			float height = 0;
+			AppearRectangleMesh mesh = renderTarget.getMesh();
+			if (mesh != null) {
+				height = mesh.getHeight();
+			}
+			renderTarget.setMesh(new AppearRectangleMesh(width, height, 50));
+			if (mControlEventHandler != null) {
+				mControlEventHandler.onSizeChanged(width, height);
+			}
+		}
 	}
 
+	public void setSizeHeight(float height) {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			float width = 0;
+			AppearRectangleMesh mesh = renderTarget.getMesh();
+			if (mesh != null) {
+				width = mesh.getWidth();
+			}
+			renderTarget.setMesh(new AppearRectangleMesh(width, height, 50));
+			if (mControlEventHandler != null) {
+				mControlEventHandler.onSizeChanged(width, height);
+			}
+		}
+	}
+
+	public float[] getSize() {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		float[] size = 0;
+		if (renderTarget != null) {
+			AppearRectangleMesh mesh = renderTarget.getMesh();
+			if (mesh != null) {
+				size[0] = mesh.getWidth();
+				size[1] = mesh.height();
+			}
+		}
+
+		return size;
+	}
+
+	public void addSize(float width, float height) {
+		AppearRenderTarget renderTarget = getAssociatedRenderTarget();
+		if (renderTarget != null) {
+			AppearRectangleMesh mesh = renderTarget.getMesh();
+			if (mesh != null) {
+				width += mesh.getWidth();
+				height += mesh.height();
+			}
+			renderTarget.setMesh(new AppearRectangleMesh(width, height, 50));
+			if (mControlEventHandler != null) {
+				mControlEventHandler.onSizeChanged(width, height);
+			}
+		}
+	}
+*/
 }

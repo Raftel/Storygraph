@@ -2,7 +2,6 @@ package com.raftel.appear.controls;
 
 import com.raftel.appear.controls.AppearSimpleControl;
 import com.raftel.appear.touch.AppearTouchInfo;
-import com.raftel.appear.common.AppearBounds;
 
 public class AppearPanel extends AppearSimpleControl {
 
@@ -34,16 +33,9 @@ public class AppearPanel extends AppearSimpleControl {
 		return false;
 	}
 
-	public boolean onChildControlAdded (AppearControl child, boolean syncToTouchGraph, boolean syncToRenderGraph) {
-		return true;
+	public void onChildControlAdded (AppearControl child, boolean syncToTouchGraph, boolean syncToRenderGraph) {
 	}
 
-	public boolean onChildControlRemoved (AppearControl child, boolean syncToTouchGraph, boolean syncToRenderGraph) {
-		return true;
+	public void onChildControlRemoved (AppearControl child, boolean syncToTouchGraph, boolean syncToRenderGraph) {
 	}
-
-	public boolean onBoundsChanged (AppearBounds bounds) {
-		return true;
-	}
-
 }
